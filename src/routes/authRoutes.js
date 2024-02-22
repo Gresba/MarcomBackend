@@ -26,7 +26,7 @@ authRoutes.post("/register", async (req, res) => {
 
 authRoutes.post("/login", async (req, res) => {
     try{
-        const loginInfo = res.body;
+        const loginInfo = req.body;
 
         const seller = await getSellerByEmail(loginInfo.email)
 

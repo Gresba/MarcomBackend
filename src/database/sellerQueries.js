@@ -1,4 +1,4 @@
-const { dbConnedtion } = require('../database/connection');
+const { dbConnection } = require('../database/connection');
 const { generateId } = require('../utils/generateId');
 
 async function getSellerBySellerId(sellerId)
@@ -14,16 +14,15 @@ async function getSellerBySellerId(sellerId)
 async function getSellerByEmail(email)
 {
     try{
-        const response = await dbConnedtion.query(
+        const response = await dbConnection.query(
             `SELECT * FROM Seller
              WHERE Email = ?   
             `, [ email ]);
         console.log(response)
-        return 200;
+        
     }catch(err){
         console.log(err)
         console.log("[ERROR]: Retrieving seller from the database")
-        return 500;
     }
 }
 
@@ -37,7 +36,7 @@ async function createSeller(seller)
     try{
         const sellerId = generateId(20);
 
-        const response = await dbConnedtion.query(
+        const response = await dbConnection.query(
             `
             INSERT INTO Seller (sellerId , Email, Username, Password) 
             VALUES (?, ?, ?, ?)
