@@ -1,7 +1,7 @@
 const express       = require('express');
 const { generateId } = require('../utils/generateId');
 const { dbConnection } = require('../database/connection');
-const { createSeller } = require('../database/sellerQueries');
+const { createSeller, getSellerByEmail } = require('../database/sellerQueries');
 
 const authRoutes    = express.Router()
 
@@ -24,21 +24,18 @@ authRoutes.post("/register", async (req, res) => {
     }
 })
 
-authRoutes.get("/signIn", async (req, res) => {
+authRoutes.post("/login", async (req, res) => {
     try{
-        const signInInfo = res.body;
+        const loginInfo = res.body;
 
-        const seller = await dbConnection.query(
-            `
-                SELECT * FROM Seller
-                WHERE SellerId = ?
-            `, [email]
-        )
+        const seller = await getSellerByEmail(loginInfo.email)
 
         console.log(seller)
 
-        const email = signInInfo.email;
-        const password = signInInfo.email;
+        const password = loginInfo.email;
+
+        if(seller.pass)
+            console.log("Hey")
 
         res.status(200).send("")
     }catch(err){

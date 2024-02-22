@@ -13,7 +13,18 @@ async function getSellerBySellerId(sellerId)
  */
 async function getSellerByEmail(email)
 {
-
+    try{
+        const response = await dbConnedtion.query(
+            `SELECT * FROM Seller
+             WHERE Email = ?   
+            `, [ email ]);
+        console.log(response)
+        return 200;
+    }catch(err){
+        console.log(err)
+        console.log("[ERROR]: Retrieving seller from the database")
+        return 500;
+    }
 }
 
 /**
@@ -34,7 +45,7 @@ async function createSeller(seller)
         return 200;
     }catch(err){
         console.log(err)
-        console.log("[ERROR]: Inserting Seller to Database")
+        console.log("[ERROR]: Inserting seller to database")
         return 500;
     }
 }
