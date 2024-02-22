@@ -15,6 +15,4 @@ router.use("/auth/", authRoutes)
 router.use("/products/", authRoutes)
 router.use("/seller/", authRoutes)
 
-
-
 module.exports = router
