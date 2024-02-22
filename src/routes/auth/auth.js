@@ -29,4 +29,15 @@ authRoutes.post("/register", async (req, res) => {
     }
 })
 
+authRoutes.get("/signIn", async (req, res) => {
+    try{
+
+        res.status(200).send("")
+    }catch(err){
+        console.log(err)
+        console.log("[ERROR]: Sign in")
+        res.status(500).send("Internal Server Error")
+    }
+})
+
 module.exports = { authRoutes }
