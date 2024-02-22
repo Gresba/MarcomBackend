@@ -1,5 +1,5 @@
 const { Router }        = require('express')
-const { authRoutes } = require('./auth/auth')
+const { authRoutes } = require('./authRoutes')
 
 const router            = Router()
 
@@ -12,6 +12,8 @@ router.get("/", (req, res) => {
 })
 
 router.use("/auth/", authRoutes)
+router.use("/products/", authRoutes)
+router.use("/seller/", authRoutes)
 
 
 

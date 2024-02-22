@@ -1,6 +1,6 @@
 const express       = require('express');
-const { generateId } = require('../../utils/generateId');
-const { dbConnection } = require('../../database/connection');
+const { generateId } = require('../utils/generateId');
+const { dbConnection } = require('../database/connection');
 
 const authRoutes    = express.Router()
 
