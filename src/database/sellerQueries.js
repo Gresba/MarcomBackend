@@ -61,8 +61,7 @@ async function createSeller(seller)
         const response = await dbConnection.query(
             `
             INSERT INTO Seller (sellerId , Email, Username, Password) 
-            VALUES (?, ?, ?, ?)
-        `, [sellerId, seller.email, seller.username, seller.password])
+            VALUES (?, ?, ?, ?)`, [sellerId, seller.email, seller.username, seller.password])
         return 200;
     }catch(err){
         console.log(err)

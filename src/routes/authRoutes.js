@@ -1,8 +1,10 @@
 const express       = require('express');
+
 const { generateId } = require('../utils/generateId');
 const { dbConnection } = require('../database/connection');
 const { createSeller, getSellerByEmail, getSellerByUsername } = require('../database/sellerQueries');
 const { log } = require('../utils/consoleLogger');
+const { generateJwtToken } = require('../utils/jwtTokens');
 
 const authRoutes    = express.Router()
 
@@ -54,6 +56,13 @@ authRoutes.post("/login", async (req, res) => {
             // Check password of registered user to login info password
             if(seller.Password === loginInfo.password)
             {
+                const jwtBody = {
+                    user: seller.Email,
+                    role: "ROLE_SELLER_BASIC"
+                }
+
+                generateJwtToken(jwtBody)
+
                 // Remove the password from the JSON since it will be shown in the front-end
                 delete seller.Password;
 
