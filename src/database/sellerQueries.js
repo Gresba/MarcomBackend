@@ -18,8 +18,7 @@ async function getSellerByEmail(email)
             `SELECT * FROM Seller
              WHERE Email = ?   
             `, [ email ]);
-        console.log(response)
-        
+        return response[0][0]
     }catch(err){
         console.log(err)
         console.log("[ERROR]: Retrieving seller from the database")

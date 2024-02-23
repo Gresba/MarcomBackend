@@ -2,6 +2,7 @@ const express       = require('express');
 const { generateId } = require('../utils/generateId');
 const { dbConnection } = require('../database/connection');
 const { createSeller, getSellerByEmail } = require('../database/sellerQueries');
+const { log } = require('../utils/consoleLogger');
 
 const authRoutes    = express.Router()
 
@@ -24,20 +25,39 @@ authRoutes.post("/register", async (req, res) => {
     }
 })
 
+// Route for logins /auth/login
 authRoutes.post("/login", async (req, res) => {
     try{
+        // Get the login info from the body
         const loginInfo = req.body;
 
+        // Get the seller from the database by email
         const seller = await getSellerByEmail(loginInfo.email)
 
-        console.log(seller)
+        // Get if there is a registered user with that email
+        if(seller)
+        {
+            // Check password of registered user to login info password
+            if(seller.Password === loginInfo.password)
+            {
+                // Remove the password from the JSON since it will be shown in the front-end
+                delete seller.Password;
+                
+                // If passwords match then send seller info and authorize
+                res.status(200).send(seller)
+            }else{
+                log("Incorrect Password")
+                // If passwords don't match send unauthorized
+                res.status(401).send("Unauthorized")
+            }
 
-        const password = loginInfo.email;
-
-        if(seller.pass)
-            console.log("Hey")
-
-        res.status(200).send("")
+        // If seller doesn't exist send unauthorized
+        }else{
+            log("Email doesn't exist")
+            res.status(401).send("Unauthorized")
+        }
+    
+    // If anything goes wrong tell the front-end it's an internal server error
     }catch(err){
         console.log(err)
         console.log("[ERROR]: Sign in")
