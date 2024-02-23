@@ -3,7 +3,30 @@ const { generateId } = require('../utils/generateId');
 
 async function getSellerBySellerId(sellerId)
 {
+    try{
+        const response = await dbConnection.query(
+            `SELECT * FROM Seller
+             WHERE SellerId = ?   
+            `, [ sellerId ]);
+        return response[0][0]
+    }catch(err){
+        console.log(err)
+        console.log("[ERROR]: Retrieving seller from the database")
+    }
+}
 
+async function getSellerByUsername(username)
+{
+    try{
+        const response = await dbConnection.query(
+            `SELECT * FROM Seller
+             WHERE Username = ?   
+            `, [ username ]);
+        return response[0][0]
+    }catch(err){
+        console.log(err)
+        console.log("[ERROR]: Retrieving seller from the database")
+    }
 }
 
 /**
@@ -60,6 +83,7 @@ async function deleteSellerBySellerId(sellerId)
 
 module.exports = {
     getSellerBySellerId,
+    getSellerByUsername,
     getSellerByEmail,
     createSeller,
     updateSellerBySellerId,

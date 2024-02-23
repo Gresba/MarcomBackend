@@ -1,7 +1,7 @@
 const express       = require('express');
 const { generateId } = require('../utils/generateId');
 const { dbConnection } = require('../database/connection');
-const { createSeller, getSellerByEmail } = require('../database/sellerQueries');
+const { createSeller, getSellerByEmail, getSellerByUsername } = require('../database/sellerQueries');
 const { log } = require('../utils/consoleLogger');
 
 const authRoutes    = express.Router()
@@ -10,7 +10,21 @@ authRoutes.post("/register", async (req, res) => {
     try{
         // The body of the request
         const seller = req.body;
-        
+
+        const sellerByEmail = await getSellerByEmail(seller.email)
+        const sellerByUsername = await getSellerByUsername(seller.username)
+
+        if(sellerByEmail)
+        {
+            res.status(409).send("Email already exist")
+            return ;
+        }
+        if(sellerByUsername)
+        {
+            res.status(409).send("Username already exist")
+            return;
+        }
+
         // Try to upload the seller
         const createSellerResponse = await createSeller(seller)
         if(createSellerResponse === 200){
@@ -42,7 +56,7 @@ authRoutes.post("/login", async (req, res) => {
             {
                 // Remove the password from the JSON since it will be shown in the front-end
                 delete seller.Password;
-                
+
                 // If passwords match then send seller info and authorize
                 res.status(200).send(seller)
             }else{
