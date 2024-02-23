@@ -1,14 +1,16 @@
 const express       = require('express')
 const cors          = require('cors');
-const { config }    = require('dotenv')
-config();
+const bodyParser    = require('body-parser');
 
-const router = require('./routes/routes')
+
+const router = require('./routes/routes');
+const { PORT } = require('./constants/config');
 
 const app = express()
-const port = process.env.PORT || 4000;
+const port = PORT || 4000;
 
 app.use(cors());
+app.use(bodyParser.json());
 app.use(express.json());
 app.use('/', router)
 

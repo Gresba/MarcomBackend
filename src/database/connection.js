@@ -1,13 +1,12 @@
 const mysql           = require('mysql2')
-const { config }      = require('dotenv')
-config()
+const { DatabaseConstants } = require('../constants/config')
 
 // Create connection to the database
 const dbConnection = mysql.createPool({
-    host: "na03-sql.pebblehost.com",
-    user: "customer_662762_markcom",
-    password: "zc8Y$9MPZDf8ZaGfk2bn",
-    database: "customer_662762_markcom"
+    host: DatabaseConstants.DATABASE_HOST,
+    user: DatabaseConstants.DATABASE_USER,
+    password: DatabaseConstants.DATABASE_PW,
+    database: DatabaseConstants.DATABASE_NAME
 }).promise()
 
 module.exports = {

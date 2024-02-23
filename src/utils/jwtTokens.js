@@ -1,6 +1,8 @@
 const jwt           = require('jsonwebtoken')
-const { config }      = require("dotenv")
+
 const { log } = require('./consoleLogger')
+
+const { config }      = require("dotenv")
 config()
 
 function generateJwtToken(jwtBody)

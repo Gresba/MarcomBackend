@@ -1,10 +1,10 @@
 const express       = require('express');
 
-const { generateId } = require('../utils/generateId');
-const { dbConnection } = require('../database/connection');
 const { createSeller, getSellerByEmail, getSellerByUsername } = require('../database/sellerQueries');
 const { log } = require('../utils/consoleLogger');
 const { generateJwtToken } = require('../utils/jwtTokens');
+const { jwtSellerAuthorization } = require('../requestFilters/security');
+const { ROLES } = require('../constants/config');
 
 const authRoutes    = express.Router()
 
@@ -58,16 +58,21 @@ authRoutes.post("/login", async (req, res) => {
             {
                 const jwtBody = {
                     user: seller.Email,
-                    role: "ROLE_SELLER_BASIC"
+                    role: ROLES.SELLER
                 }
 
-                generateJwtToken(jwtBody)
+                const jwtToken = generateJwtToken(jwtBody)
 
                 // Remove the password from the JSON since it will be shown in the front-end
                 delete seller.Password;
 
                 // If passwords match then send seller info and authorize
-                res.status(200).send(seller)
+                res.status(200).json(
+                    {
+                        seller: seller,
+                        jwtToken: jwtToken
+                    }
+                )
             }else{
                 log("Incorrect Password")
                 // If passwords don't match send unauthorized
