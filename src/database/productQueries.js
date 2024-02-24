@@ -1,6 +1,21 @@
 const { generateId } = require("../utils/generateId")
 const { dbConnection } = require("./connection")
 
+async function getProductsBySellerId(sellerId)
+{
+    try{
+        const response = await dbConnection.query(
+            `SELECT * FROM Product
+             WHERE SellerId = ?`, [sellerId]
+        )
+        console.log(response)
+        return response[0]
+    }catch(err){
+        console.log(err)
+        return 500;
+    }
+}
+
 async function createProduct(product, sellerId)
 {
     try{
@@ -14,7 +29,6 @@ async function createProduct(product, sellerId)
         const sellerProduct = await dbConnection.query(
             `SELECT * FROM Seller`
         )
-        console.log(sellerProduct[0])
         return response[0][0]
     }catch(err){
         console.log(err)
@@ -22,19 +36,7 @@ async function createProduct(product, sellerId)
     }
 }
 
-async function getProductsBySellerEmail(sellerId)
-{
-    try{
-        const response = await dbConnection.query(
-            `SELECT * FROM Product
-             WHERE `
-        )
-    }catch(err){
-        console.log(err)
-        return 500;
-    }
-}
-
 module.exports = {
-    createProduct
+    createProduct,
+    getProductsBySellerId
 }
