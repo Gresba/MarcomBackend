@@ -29,9 +29,13 @@ function jwtSellerAuthorization(req, res, next)
             {
                 return res.status(403).send("Insufficient Permissions")
             }
+            
+            // Append the info to the request
             req.decoded = decoded
             next();
         });
+    
+    // If header doesn't exist deny authorization to the route
     }else{
         res.status(401).send("No JWT Token")
     }

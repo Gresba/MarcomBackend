@@ -9,7 +9,6 @@ function generateJwtToken(jwtBody)
 {
     const secret = process.env.JWT_SECRET
     const jwtToken =  jwt.sign(jwtBody, secret, {expiresIn: '24h'})
-    log(jwtToken)
     return jwtToken;
 }
 
