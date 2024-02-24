@@ -5,6 +5,16 @@ const { createProduct } = require('../database/productQueries');
 
 const productRoutes    = express.Router()
 
+productRoutes.get("/", jwtSellerAuthorization, async(req, res) => {
+    const seller = req.decoded
+    if(!seller)
+    {
+        return res.status(401).send("Unauthorized")
+    }
+    const sellerEmail = seller.user;
+
+})
+
 productRoutes.post("/", jwtSellerAuthorization, async (req, res) => {
     const product = req.body;
     const seller = req.decoded;
@@ -18,9 +28,7 @@ productRoutes.post("/", jwtSellerAuthorization, async (req, res) => {
         return res.status(401).send("Unauthorized")
     }
 
-    const sellerEmail = seller.user;
-    const sellerByEmail = await getSellerByEmail(sellerEmail)
-    const sellerId = sellerByEmail.sellerId
+    const sellerId = seller.id
 
     const reponse = await createProduct(product, sellerId)
 })

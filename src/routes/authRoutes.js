@@ -58,6 +58,7 @@ authRoutes.post("/login", async (req, res) => {
             {
                 const jwtBody = {
                     user: seller.Email,
+                    id: seller.SellerId,
                     role: ROLES.SELLER
                 }
 
