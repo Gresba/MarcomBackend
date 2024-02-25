@@ -8,7 +8,6 @@ async function getProductsBySellerId(sellerId)
             `SELECT * FROM Product
              WHERE SellerId = ?`, [sellerId]
         )
-        console.log(response)
         return response[0]
     }catch(err){
         console.log(err)

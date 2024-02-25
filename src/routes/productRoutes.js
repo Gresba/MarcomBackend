@@ -2,10 +2,12 @@ const express       = require('express');
 const { jwtSellerAuthorization } = require('../requestFilters/security');
 const { getSellerByEmail } = require('../database/sellerQueries');
 const { createProduct, getProductsBySellerId } = require('../database/productQueries');
+const { log } = require('../utils/consoleLogger');
 
 const productRoutes    = express.Router()
 
 productRoutes.get("/", jwtSellerAuthorization, async(req, res) => {
+    log("Attempted")
     const seller = req.decoded
     if(!seller)
     {
@@ -14,6 +16,7 @@ productRoutes.get("/", jwtSellerAuthorization, async(req, res) => {
     const sellerId = seller.id;
 
     const response = await getProductsBySellerId(sellerId)
+    return res.status(200).send(response)
 })
 
 productRoutes.post("/", jwtSellerAuthorization, async (req, res) => {
