@@ -24,9 +24,28 @@ async function createProduct(product, sellerId)
             `INSERT INTO Product (ProductId, Title, Description, ProductType, Price, Stock, SellerId)
             VALUES (?, ?, ?, ?, ?, ?, ?)`
         , [productId, product.title, product.description, product.productType, product.price, 0, sellerId])
-        console.log(response)
-        const sellerProduct = await dbConnection.query(
-            `SELECT * FROM Seller`
+
+        return response[0]
+    }catch(err){
+        console.log(err)
+        console.log(err.errno)
+        switch(err.errno)
+        {
+            case 1366:
+                return 422
+            default:
+                return 500
+            
+        }
+    }
+}
+
+async function getProductById(productId)
+{
+    try{
+        const response = await dbConnection.query(
+            `SELECT * FROM Product
+            WHERE ProductId = ?`, [productId]
         )
         return response[0][0]
     }catch(err){
@@ -35,7 +54,25 @@ async function createProduct(product, sellerId)
     }
 }
 
+async function deleteProductById(productId)
+{
+    try{
+        const response = await dbConnection.query(
+            `DELETE FROM Product
+            WHERE ProductId = ?`, [productId]
+        )
+        console.log("DELETED")
+        console.log(response)
+        return response
+    }catch(err){
+        console.log(err)
+        return 500;
+    }
+}
+
 module.exports = {
     createProduct,
-    getProductsBySellerId
+    getProductsBySellerId,
+    deleteProductById,
+    getProductById
 }

@@ -1,7 +1,7 @@
 const express       = require('express');
 const { jwtSellerAuthorization } = require('../requestFilters/security');
 const { getSellerByEmail } = require('../database/sellerQueries');
-const { createProduct, getProductsBySellerId } = require('../database/productQueries');
+const { createProduct, getProductsBySellerId, deleteProductById, getProductById } = require('../database/productQueries');
 const { log } = require('../utils/consoleLogger');
 
 const productRoutes    = express.Router()
@@ -9,10 +9,6 @@ const productRoutes    = express.Router()
 productRoutes.get("/", jwtSellerAuthorization, async(req, res) => {
     log("Attempted")
     const seller = req.decoded
-    if(!seller)
-    {
-        return res.status(401).send("Unauthorized")
-    }
     const sellerId = seller.id;
 
     const response = await getProductsBySellerId(sellerId)
@@ -25,17 +21,60 @@ productRoutes.post("/", jwtSellerAuthorization, async (req, res) => {
     
     if(!product)
     {
-        return res.status(409).send("Missing Values")
-    }
-    if(!seller)
-    {
-        return res.status(401).send("Unauthorized")
+        return res.status(400).send("Missing Values")
     }
 
-    console.log(seller)
     const sellerId = seller.id
 
-    const reponse = await createProduct(product, sellerId)
+    const response = await createProduct(product, sellerId)
+    if(response.affectedRows > 0)
+    {
+        return res.status(201).json(
+            {
+                message: "Created Product"
+            }
+        )
+    }else{
+        return res.status(response).json(
+            {
+                message: "Failed to create product"
+            }
+        )
+    }
+})
+
+productRoutes.delete("/:productId", jwtSellerAuthorization, async (req, res) => {
+    const productId = req.params.productId
+    const seller = req.decoded
+
+    const product = await getProductById(productId)
+    if(product.SellerId === seller.id)
+    {
+        const response = await deleteProductById(productId)
+        console.log(response)
+        if(response[0].affectedRows > 0)
+        {
+            return res.status(200).json(
+                {
+                    rowsAffected: response[0].affectedRows,
+                    message: "Product deleted"
+                }
+            )
+        }else{
+            return res.status(404).json(
+                {
+                    rowsAffected: response[0].affectedRows,
+                    message: "Product Id not found"
+                }
+            )
+        }
+    }else{
+        return res.status(403).json(
+            {
+                message: "Wrong owner"
+            }
+        )
+    }
 })
 
 module.exports = { productRoutes }
