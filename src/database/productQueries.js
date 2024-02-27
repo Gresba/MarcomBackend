@@ -1,6 +1,19 @@
 const { generateId } = require("../utils/generateId")
 const { dbConnection } = require("./connection")
+/**
+ * The file is to store all the functions that run creates related the products
+ * 
+ * Author: Paul Kim
+ * Last modified: 2/26/2024
+ * To Do(s):
+ */
 
+/**
+ * Retrieve the products that being to a seller
+ * 
+ * @param {*} sellerId The seller id
+ * @returns All products that belong to a seller
+ */
 async function getProductsBySellerId(sellerId)
 {
     try{
@@ -40,6 +53,12 @@ async function createProduct(product, sellerId)
     }
 }
 
+/**
+ * Get a product with the id
+ * 
+ * @param {*} productId The product id
+ * @returns The product
+ */
 async function getProductById(productId)
 {
     try{
