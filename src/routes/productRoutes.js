@@ -36,6 +36,7 @@ productRoutes.get("/:productId", async (req, res) => {
     return res.status(200).json(product)
 })
 
+
 productRoutes.put("/:productId", async (req, res) => {
     const productId = req.params.productId
     const newProduct = req.body

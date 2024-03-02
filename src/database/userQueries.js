@@ -70,6 +70,11 @@ async function getUserByEmail(email)
     }
 }
 
+async function getAllSellerDetailsByUsername(username)
+{
+    
+}
+
 /**
  * Generate a userId and create a user.
  * 
