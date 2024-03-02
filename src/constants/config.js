@@ -20,9 +20,9 @@ const DatabaseConstants = {
 
 // Roles of the users which will be used to access different routes
 const ROLES = {
-    CUSTOMER: "ROLE_CUSTOMER",
-    SELLER: "ROLE_SELLER",
-    ADMIN: "ROLE_ADMIN"
+    CUSTOMER: "Customer",
+    SELLER: "Merchant",
+    ADMIN: "Admin"
 }
 
 // The secret for JWT encryption which is in .env

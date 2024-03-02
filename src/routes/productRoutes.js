@@ -1,7 +1,7 @@
 const express       = require('express');
 const { jwtSellerAuthorization } = require('../requestFilters/security');
 const { getUserByEmail } = require('../database/userQueries');
-const { createProduct, getProductsByUserId, deleteProductById, getProductById } = require('../database/productQueries');
+const { createProduct, getProductsBySellerId, deleteProductById, getProductById } = require('../database/productQueries');
 const { log } = require('../utils/consoleLogger');
 /**
  * Contains all the routes for products
@@ -20,7 +20,7 @@ productRoutes.get("/", jwtSellerAuthorization, async(req, res) => {
     const user = req.decoded
     const userId = user.id;
 
-    const response = await getProductsByUserId(userId)
+    const response = await getProductsBySellerId(userId)
     return res.status(200).send(response)
 })
 
