@@ -36,7 +36,7 @@ async function createProduct(product, sellerId)
         const response = await dbConnection.query(
             `INSERT INTO Product (ProductId, Title, Description, ProductType, Price, Stock, SellerId)
             VALUES (?, ?, ?, ?, ?, ?, ?)`
-        , [productId, product.title, product.description, product.productType, product.price, 0, sellerId])
+        , [productId, product.Title, product.Description, product.ProductType, product.Price, 0, sellerId])
 
         return response[0]
     }catch(err){
@@ -51,6 +51,28 @@ async function createProduct(product, sellerId)
             
         }
     }
+}
+
+/**
+ * TO DO(s)
+ *  - Implement stock updater
+ * 
+ * @param {*} productId 
+ * @param {*} newProduct 
+ */
+async function updateProductById(productId, newProduct)
+{
+    const response = await dbConnection.query(
+        `UPDATE Product
+         SET Title = ?,
+                Description = ?,
+                ProductType = ?,
+                DeliverySpeed = ?,
+                DigitalType = ?,
+                Price = ?
+        WHERE ProductId = ?`, [newProduct.Title, newProduct.Description, newProduct.ProductType, newProduct.DeliverySpeed, newProduct.DigitalType, newProduct.Price, productId]
+    )
+    console.log(response)
 }
 
 /**
@@ -93,5 +115,6 @@ module.exports = {
     createProduct,
     getProductsBySellerId,
     deleteProductById,
-    getProductById
+    getProductById,
+    updateProductById
 }

@@ -1,7 +1,7 @@
 const express       = require('express');
 const { jwtSellerAuthorization } = require('../requestFilters/security');
 const { getUserByEmail } = require('../database/userQueries');
-const { createProduct, getProductsBySellerId, deleteProductById, getProductById } = require('../database/productQueries');
+const { createProduct, getProductsBySellerId, deleteProductById, getProductById, updateProductById } = require('../database/productQueries');
 const { log } = require('../utils/consoleLogger');
 /**
  * Contains all the routes for products
@@ -34,6 +34,20 @@ productRoutes.get("/:productId", async (req, res) => {
     const product = await getProductById(productId)
     
     return res.status(200).json(product)
+})
+
+productRoutes.put("/:productId", async (req, res) => {
+    const productId = req.params.productId
+    const newProduct = req.body
+
+    try{
+        await updateProductById(productId, newProduct)
+        return res.status(200).json({ message: "Success"})
+    }catch(err){
+        console.log(err)
+        return res.status(500).json({ message: "Internal Server Error"})
+    }
+
 })
 
 productRoutes.post("/", jwtSellerAuthorization, async (req, res) => {
