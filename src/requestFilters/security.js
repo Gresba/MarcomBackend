@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const { JWT_SECRET, ROLES } = require('../constants/config');
 
 /**
- * Filter to be used for routes that should only be accessible to sellers
+ * Filter to be used for routes that should only be accessible to users
  * 
  * @param {*} req HTTP Request
  * @param {*} res HTTP Response
@@ -24,7 +24,7 @@ function jwtSellerAuthorization(req, res, next)
                 return res.status(401).send("Invaid JWT Token")
             }
 
-            // If the role associated with the JWT token !== the SELLER ROLE
+            // If the role associated with the JWT token !== the USER ROLE
             if(decoded.role !== ROLES.SELLER)
             {
                 return res.status(403).send("Insufficient Permissions")

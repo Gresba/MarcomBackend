@@ -9,17 +9,17 @@ const { dbConnection } = require("./connection")
  */
 
 /**
- * Retrieve the products that being to a seller
+ * Retrieve the products that being to a User
  * 
- * @param {*} sellerId The seller id
- * @returns All products that belong to a seller
+ * @param {*} userId The user id
+ * @returns All products that belong to a user
  */
-async function getProductsBySellerId(sellerId)
+async function getProductsByUserId(userId)
 {
     try{
         const response = await dbConnection.query(
             `SELECT * FROM Product
-             WHERE SellerId = ?`, [sellerId]
+             WHERE UserId = ?`, [userId]
         )
         return response[0]
     }catch(err){
@@ -28,15 +28,15 @@ async function getProductsBySellerId(sellerId)
     }
 }
 
-async function createProduct(product, sellerId)
+async function createProduct(product, userId)
 {
     try{
         const productId = generateId(16)
 
         const response = await dbConnection.query(
-            `INSERT INTO Product (ProductId, Title, Description, ProductType, Price, Stock, SellerId)
+            `INSERT INTO Product (ProductId, Title, Description, ProductType, Price, Stock, UserId)
             VALUES (?, ?, ?, ?, ?, ?, ?)`
-        , [productId, product.title, product.description, product.productType, product.price, 0, sellerId])
+        , [productId, product.title, product.description, product.productType, product.price, 0, userId])
 
         return response[0]
     }catch(err){
@@ -91,7 +91,7 @@ async function deleteProductById(productId)
 
 module.exports = {
     createProduct,
-    getProductsBySellerId,
+    getProductsByUserId,
     deleteProductById,
     getProductById
 }

@@ -1,9 +1,9 @@
 const express       = require('express');
 
-const sellerRoutes    = express.Router()
+const userRoutes    = express.Router()
 
-sellerRoutes.get("/", async (req, res) => {
-    res.send("Seller")
+userRoutes.get("/", async (req, res) => {
+    res.send("User")
 })
 
-module.exports = { sellerRoutes }
+module.exports = { userRoutes }

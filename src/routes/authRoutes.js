@@ -1,6 +1,6 @@
 const express       = require('express');
 
-const { createSeller, getSellerByEmail, getSellerByUsername } = require('../database/sellerQueries');
+const { createUser, getUserByEmail, getUserByUsername } = require('../database/userQueries');
 const { log } = require('../utils/consoleLogger');
 const { generateJwtToken } = require('../utils/jwtTokens');
 const { jwtSellerAuthorization } = require('../requestFilters/security');
@@ -11,28 +11,28 @@ const authRoutes    = express.Router()
 authRoutes.post("/register", async (req, res) => {
     try{
         // The body of the request
-        const seller = req.body;
+        const user = req.body;
 
-        const sellerByEmail = await getSellerByEmail(seller.email)
-        const sellerByUsername = await getSellerByUsername(seller.username)
+        const userByEmail = await getUserByEmail(user.email)
+        const userByUsername = await getUserByUsername(user.username)
 
-        if(sellerByEmail)
+        if(userByEmail)
         {
             res.status(409).send("Email already exist")
             return ;
         }
-        if(sellerByUsername)
+        if(userByUsername)
         {
             res.status(409).send("Username already exist")
             return;
         }
 
-        // Try to upload the seller
-        const createSellerResponse = await createSeller(seller)
-        if(createSellerResponse === 200){
-            res.status(createSellerResponse).send("Uploaded Seller")
-        }else if(createSellerResponse === 500){
-            res.status(createSellerResponse).send("Internal Server Error")
+        // Try to upload the user
+        const createUserResponse = await createUser(user)
+        if(createUserResponse === 200){
+            res.status(createUserResponse).send("Uploaded User")
+        }else if(createUserResponse === 500){
+            res.status(createUserResponse).send("Internal Server Error")
         }
     }catch(err){
         console.log(err)
@@ -47,30 +47,30 @@ authRoutes.post("/login", async (req, res) => {
         // Get the login info from the body
         const loginInfo = req.body;
 
-        // Get the seller from the database by email
-        const seller = await getSellerByEmail(loginInfo.email)
+        // Get the user from the database by email
+        const user = await getUserByEmail(loginInfo.email)
 
         // Get if there is a registered user with that email
-        if(seller)
+        if(user)
         {
             // Check password of registered user to login info password
-            if(seller.Password === loginInfo.password)
+            if(user.Password === loginInfo.password)
             {
                 const jwtBody = {
-                    user: seller.Email,
-                    id: seller.SellerId,
+                    user: user.Email,
+                    id: user.UserId,
                     role: ROLES.SELLER
                 }
 
                 const jwtToken = generateJwtToken(jwtBody)
 
                 // Remove the password from the JSON since it will be shown in the front-end
-                delete seller.Password;
+                delete user.Password;
 
-                // If passwords match then send seller info and authorize
+                // If passwords match then send user info and authorize
                 res.status(200).json(
                     {
-                        seller: seller,
+                        user: user,
                         jwtToken: jwtToken
                     }
                 )
@@ -80,7 +80,7 @@ authRoutes.post("/login", async (req, res) => {
                 res.status(401).send("Unauthorized")
             }
 
-        // If seller doesn't exist send unauthorized
+        // If user doesn't exist send unauthorized
         }else{
             log("Email doesn't exist")
             res.status(401).send("Unauthorized")

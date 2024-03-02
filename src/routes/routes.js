@@ -14,6 +14,6 @@ router.get("/", (req, res) => {
 
 router.use("/auth", authRoutes)
 router.use("/products", productRoutes)
-router.use("/seller", authRoutes)
+router.use("/user", authRoutes)
 
 module.exports = router

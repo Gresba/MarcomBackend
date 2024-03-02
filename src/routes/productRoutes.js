@@ -1,7 +1,7 @@
 const express       = require('express');
 const { jwtSellerAuthorization } = require('../requestFilters/security');
-const { getSellerByEmail } = require('../database/sellerQueries');
-const { createProduct, getProductsBySellerId, deleteProductById, getProductById } = require('../database/productQueries');
+const { getUserByEmail } = require('../database/userQueries');
+const { createProduct, getProductsByUserId, deleteProductById, getProductById } = require('../database/productQueries');
 const { log } = require('../utils/consoleLogger');
 /**
  * Contains all the routes for products
@@ -17,16 +17,16 @@ const productRoutes    = express.Router()
 
 productRoutes.get("/", jwtSellerAuthorization, async(req, res) => {
     log("Attempted")
-    const seller = req.decoded
-    const sellerId = seller.id;
+    const user = req.decoded
+    const userId = user.id;
 
-    const response = await getProductsBySellerId(sellerId)
+    const response = await getProductsByUserId(userId)
     return res.status(200).send(response)
 })
 
 /**
  * This route does not need to be protected since it needs to be accessed when
- * customers view a seller's storefront
+ * customers view a user's storefront
  */
 productRoutes.get("/:productId", async (req, res) => {
     const productId = req.params.productId
@@ -38,16 +38,16 @@ productRoutes.get("/:productId", async (req, res) => {
 
 productRoutes.post("/", jwtSellerAuthorization, async (req, res) => {
     const product = req.body;
-    const seller = req.decoded;
+    const user = req.decoded;
     
     if(!product)
     {
         return res.status(400).send("Missing Values")
     }
 
-    const sellerId = seller.id
+    const userId = user.id
 
-    const response = await createProduct(product, sellerId)
+    const response = await createProduct(product, userId)
     if(response.affectedRows > 0)
     {
         return res.status(201).json(
@@ -66,10 +66,10 @@ productRoutes.post("/", jwtSellerAuthorization, async (req, res) => {
 
 productRoutes.delete("/:productId", jwtSellerAuthorization, async (req, res) => {
     const productId = req.params.productId
-    const seller = req.decoded
+    const user = req.decoded
 
     const product = await getProductById(productId)
-    if(product.SellerId === seller.id)
+    if(product.UserId === user.id)
     {
         const response = await deleteProductById(productId)
         console.log(response)
