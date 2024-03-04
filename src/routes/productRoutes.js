@@ -82,9 +82,10 @@ productRoutes.post("/", jwtSellerAuthorization, async (req, res) => {
 productRoutes.delete("/:productId", jwtSellerAuthorization, async (req, res) => {
     const productId = req.params.productId
     const user = req.decoded
+    console.log(user)
 
     const product = await getProductById(productId)
-    if(product.UserId === user.id)
+    if(product.SellerId === user.id)
     {
         const response = await deleteProductById(productId)
         console.log(response)
