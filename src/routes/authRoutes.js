@@ -5,6 +5,7 @@ const { log } = require('../utils/consoleLogger');
 const { generateJwtToken } = require('../utils/jwtTokens');
 const { jwtSellerAuthorization } = require('../requestFilters/security');
 const { ROLES } = require('../constants/config');
+const { hashString } = require('../utils/encrypt');
 
 const authRoutes    = express.Router()
 
@@ -21,6 +22,7 @@ authRoutes.post("/register", async (req, res) => {
             res.status(409).send("Email already exist")
             return ;
         }
+
         if(userByUsername)
         {
             res.status(409).send("Username already exist")
@@ -28,6 +30,9 @@ authRoutes.post("/register", async (req, res) => {
         }
 
         // Try to upload the user
+        console.log(user)
+        console.log(hashString(user.password))
+        user.password = hashString(user.password)
         const createUserResponse = await createUser(user)
         if(createUserResponse === 200){
             res.status(createUserResponse).send("Uploaded User")
@@ -54,7 +59,7 @@ authRoutes.post("/login", async (req, res) => {
         if(user)
         {
             // Check password of registered user to login info password
-            if(user.Password === loginInfo.password)
+            if(user.Password === hashString(loginInfo.password))
             {
                 const jwtBody = {
                     user: user.Email,
