@@ -1,6 +1,6 @@
 const express       = require('express');
 const { getUserByUsername } = require('../database/userQueries');
-const { getProductsBySellerId } = require('../database/productQueries');
+const { getProductsBySellerId } = require('../database/product');
 
 const userRoutes    = express.Router()
 

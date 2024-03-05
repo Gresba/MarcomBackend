@@ -10,6 +10,26 @@ const { createMessage } = require("./message")
  */
 
 /**
+ * Retrieve the products that being to a User
+ * 
+ * @param {*} sellerId The user id
+ * @returns All products that belong to a user
+ */
+async function getQueriesBySellerId(sellerId)
+{
+    try{
+        const response = await dbConnection.query(
+            `SELECT * FROM Query
+             WHERE SellerId = ?`, [sellerId]
+        )
+        return response[0]
+    }catch(err){
+        console.log(err)
+        return 500;
+    }
+}
+
+/**
  * 
  */
 async function createQuery(newQuery)
@@ -32,5 +52,6 @@ async function createQuery(newQuery)
 }
 
 module.exports = {
-    createQuery
+    createQuery,
+    getQueriesBySellerId
 }

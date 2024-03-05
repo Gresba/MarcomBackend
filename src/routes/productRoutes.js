@@ -1,7 +1,7 @@
 const express       = require('express');
 const { jwtSellerAuthorization } = require('../requestFilters/security');
 const { getUserByEmail } = require('../database/userQueries');
-const { createProduct, getProductsBySellerId, deleteProductById, getProductById, updateProductById } = require('../database/productQueries');
+const { createProduct, getProductsBySellerId, deleteProductById, getProductById, updateProductById } = require('../database/product');
 const { log } = require('../utils/consoleLogger');
 /**
  * Contains all the routes for products

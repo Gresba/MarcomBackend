@@ -8,16 +8,17 @@
  */
 const express       = require('express');
 const { getUserByUsername } = require('../database/userQueries');
-const { createQuery } = require('../database/queries');
+const { createQuery, getQueriesBySellerId } = require('../database/queries');
+const { jwtSellerAuthorization } = require('../requestFilters/security');
 
 const queryRoutes = express.Router()
 
-queryRoutes.get("/", async (req, res) => {
-    res.status(200).json(
-        {
-            status: "Success"
-        }
-    )
+queryRoutes.get("/", jwtSellerAuthorization, async(req, res) => {
+    const user = req.decoded
+    const userId = user.id;
+
+    const response = await getQueriesBySellerId(userId)
+    return res.status(200).send(response)
 })
 
 queryRoutes.post("/", async (req, res) => {
