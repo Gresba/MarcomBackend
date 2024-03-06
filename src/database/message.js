@@ -30,6 +30,18 @@ async function createMessage(queryId, author, content)
     }
 }
 
+async function getMessagesByQueryId(queryId)
+{
+    const response = await dbConnection.query(
+        `SELECT * FROM Message
+        WHERE QueryId = ?
+        ORDER BY DateCreated`, [queryId]
+    )
+    console.log(response)
+    return response[0]
+}
+
 module.exports = {
-    createMessage
+    createMessage,
+    getMessagesByQueryId
 }
