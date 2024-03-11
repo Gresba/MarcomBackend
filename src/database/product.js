@@ -28,6 +28,15 @@ async function getProductsBySellerId(sellerId)
     }
 }
 
+async function getProductPriceByProductId(productId)
+{
+    const response = await dbConnection.query(
+        `SELECT Price FROM Product
+         WHERE ProductId = ?`, [productId]
+    )
+    return response[0][0].Price
+}
+
 async function createProduct(product, sellerId)
 {
     try{
@@ -112,6 +121,7 @@ async function deleteProductById(productId)
 }
 
 module.exports = {
+    getProductPriceByProductId,
     createProduct,
     getProductsBySellerId,
     deleteProductById,

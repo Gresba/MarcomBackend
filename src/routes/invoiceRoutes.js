@@ -2,15 +2,50 @@
  * Purpose: Store all the routes for invoices
  * 
  * Author: Paul Kim
- * Last Modified: 3/1/2024
+ * Last Modified: 3/10/2024
  * TO DO(s):
  * - Implement get invoice routes
- * - Implement get queries routes
- * - Implement 
  */
 const express       = require('express');
+const { createInvoice } = require('../database/invoiceQueries');
+const { getProductById, getProductPriceByProductId } = require('../database/product');
+const { generateId } = require('../utils/generateId');
 
 const invoiceRoutes = express.Router()
+
+/**
+ * Structure: router.<Request Type>("<Route>", <Filters>, (req: The request, res: The response) => {
+ *    logic
+ * })
+ * 
+ * Creating POST route for creating invoices. 
+ * Anyone should be able to access so do not add any filters
+ */
+invoiceRoutes.post("/", async (req, res) => {
+
+    // Extracting the body from the request
+    const invoice = req.body;
+    console.log(invoice)
+
+    const creationDate = new Date()
+    console.log(creationDate)
+
+    const productPrice = await getProductPriceByProductId(invoice.ProductId)
+
+    invoice.InvoiceId = generateId(35)
+    invoice.InvoiceKey = generateId(12)
+    invoice.InvoiceStatus = "Not Paid"
+    invoice.CreationDate = new Date()
+    invoice.invoicePrice = productPrice * invoice.Quantity
+
+    try{
+        await createInvoice(invoice)
+        return res.status(200).json({message: "Successfully Created"})
+    }catch(err){
+        console.log(err)
+        return res.status(500).json({message: "Error saving invoice"})
+    }
+})
 
 module.exports = {
     invoiceRoutes
