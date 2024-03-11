@@ -11,6 +11,7 @@ const { createInvoice, getInvoiceById } = require('../database/invoiceQueries');
 const { getProductById, getProductPriceByProductId } = require('../database/product');
 const { generateId } = require('../utils/generateId');
 const { jwtGetInvoiceFilter } = require('../requestFilters/security');
+const { sendEmail } = require('../constants/emailer');
 
 const invoiceRoutes = express.Router()
 
@@ -43,6 +44,7 @@ invoiceRoutes.post("/", async (req, res) => {
     // Save the invoice into the database
     try{
         await createInvoice(invoice)
+        await sendEmail(invoice.CustomerEmail, `Your order ${invoice.InvoiceId}`, "You Created and order")
         return res.status(200).json({message: "Successfully Created"})
     }catch(err){
         console.log(err)
@@ -54,7 +56,6 @@ invoiceRoutes.get("/:invoiceId", jwtGetInvoiceFilter ,async (req, res) => {
     const invoiceId = req.params.invoiceId.split("-")[0]
     try{
         const invoice = await getInvoiceById(invoiceId)
-        
         console.log(invoice)
         return res.status(200).json(invoice)
     }catch(err){
