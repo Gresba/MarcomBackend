@@ -37,15 +37,12 @@ async function getProductPriceByProductId(productId)
     return response[0][0].Price
 }
 
-async function createProduct(product, sellerId)
+async function createProduct(product)
 {
     try{
-        const productId = generateId(16)
-
         const response = await dbConnection.query(
-            `INSERT INTO Product (ProductId, Title, Description, ProductType, Price, Stock, SellerId)
-            VALUES (?, ?, ?, ?, ?, ?, ?)`
-        , [productId, product.Title, product.Description, product.ProductType, product.Price, 0, sellerId])
+            `INSERT INTO Product SET ?`
+        , [product])
 
         return response[0]
     }catch(err){

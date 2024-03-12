@@ -1,4 +1,5 @@
-const jwt = require('jsonwebtoken');
+const jwt           = require('jsonwebtoken');
+
 const { JWT_SECRET, ROLES } = require('../constants/config');
 const { getInvoiceKey } = require('../database/invoiceQueries');
 
@@ -32,6 +33,7 @@ function jwtSellerAuthorization(req, res, next)
             }
             
             // Append the info to the request
+            console.log("Image Up")
             req.decoded = decoded
             next();
         });

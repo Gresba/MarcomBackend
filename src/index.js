@@ -10,6 +10,7 @@ const app = express()
 const port = PORT || 4000;
 
 app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.json());
 app.use('/', router)

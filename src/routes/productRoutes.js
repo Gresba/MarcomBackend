@@ -1,8 +1,12 @@
 const express       = require('express');
+const multer        = require('multer');
+
 const { jwtSellerAuthorization } = require('../requestFilters/security');
 const { getUserByEmail } = require('../database/userQueries');
 const { createProduct, getProductsBySellerId, deleteProductById, getProductById, updateProductById } = require('../database/product');
 const { log } = require('../utils/consoleLogger');
+const { uploadImageToCloudFlare } = require('../utils/cloudflare/uploadImage');
+const { generateId } = require('../utils/generateId');
 /**
  * Contains all the routes for products
  * 
@@ -14,6 +18,20 @@ const { log } = require('../utils/consoleLogger');
  */
 
 const productRoutes    = express.Router()
+
+const storage = multer.diskStorage(
+    {
+        destination: function (req, file, cb) {
+            cb(null, './src/uploads/'); // Directory to store uploaded files
+        },
+        filename: function (req, file, cb) {
+            console.log(file)
+            cb(null, file.originalname);
+        }
+    }
+)
+
+const upload = multer({ storage: storage });
 
 productRoutes.get("/", jwtSellerAuthorization, async(req, res) => {
     log("Attempted")
@@ -51,18 +69,24 @@ productRoutes.put("/:productId", async (req, res) => {
 
 })
 
-productRoutes.post("/", jwtSellerAuthorization, async (req, res) => {
-    const product = req.body;
+productRoutes.post("/", upload.single('image'), jwtSellerAuthorization, async (req, res) => {
+    const product = JSON.parse(req.body.product);
     const user = req.decoded;
+
+    const uploadImageResponse = await uploadImageToCloudFlare(req.file.path)
+    const imageId = uploadImageResponse.data.result.id
+
+    product.productId = generateId(16);
+    product.productImage = imageId;
+    product.sellerId = user.id 
+    product.stock = 0
     
     if(!product)
     {
         return res.status(400).send("Missing Values")
     }
 
-    const userId = user.id
-
-    const response = await createProduct(product, userId)
+    const response = await createProduct(product)
     if(response.affectedRows > 0)
     {
         return res.status(201).json(
