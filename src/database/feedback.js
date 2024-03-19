@@ -10,12 +10,22 @@ const { dbConnection } = require("./connection")
 
 async function createFeedback(feedback)
 {
-    const response = dbConnection.query(
+    const response = await dbConnection.query(
         `INSERT INTO Feedback SET ?`, [feedback]
     )
     return response;
 }
 
+async function getFeedbackByProductId(productId)
+{
+    const response = await dbConnection.query(
+        `SELECT Rating, DateCreated, Message FROM Feedback
+        WHERE ProductId = ?`, [productId]
+    )
+    return response[0]
+}
+
 module.exports = {
-    createFeedback
+    createFeedback,
+    getFeedbackByProductId
 }

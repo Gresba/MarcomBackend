@@ -8,10 +8,23 @@
 const express           = require('express');
 const { jwtGetInvoiceFilter, jwtPostFeedbackFilter } = require('../requestFilters/security');
 const { getValueByInvoiceId, updateFeedbackById } = require('../database/invoiceQueries');
-const { createFeedback } = require('../database/feedback');
+const { createFeedback, getFeedbackByProductId } = require('../database/feedback');
 const { generateId } = require('../utils/generateId');
 
 const feedbackRoutes    = express.Router()
+
+feedbackRoutes.get("/:productId", async (req, res) => {
+    const productId = req.params.productId
+
+    try{
+        const productFeedback = await getFeedbackByProductId(productId)
+        console.log(productFeedback)
+        return res.status(200).json(productFeedback)
+    }catch(e){
+        console.log(e)
+        return res.status(500).json({ message: "Internal Server Error"})
+    }
+})
 
 /**
  * Structure: router.<Request Type>("<Route>", <Filters>, (req: The request, res: The response) => {
