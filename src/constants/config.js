@@ -28,7 +28,10 @@ const ROLES = {
 // The secret for JWT encryption which is in .env
 const JWT_SECRET = process.env.JWT_SECRET
 
+// Nonce to encrypt sha256 algorithm even more
 const HASH_NONCE = process.env.HASH_NONCE
+
+const FRONT_END_URL = process.env.FRONT_END_URL
 
 // Port number for the server which is in .env
 const PORT = process.env.PORT
@@ -37,6 +40,7 @@ module.exports = {
     DatabaseConstants,
     JWT_SECRET,
     HASH_NONCE,
+    FRONT_END_URL,
     PORT,
     ROLES
 }

@@ -8,10 +8,12 @@
  */
 const express       = require('express');
 const { createInvoice, getInvoiceById } = require('../database/invoiceQueries');
-const { getProductById, getProductPriceByProductId } = require('../database/product');
+const { getProductById } = require('../database/product');
 const { generateId } = require('../utils/generateId');
 const { jwtGetInvoiceFilter } = require('../requestFilters/security');
 const { sendEmail } = require('../constants/emailer');
+const { getValueByUserId } = require('../database/userQueries');
+const { FRONT_END_URL } = require('../constants/config');
 
 const invoiceRoutes = express.Router()
 
@@ -35,11 +37,14 @@ invoiceRoutes.post("/", async (req, res) => {
     const product = await getProductById(invoice.ProductId)
     const productPrice = product.Price
     const sellerId = product.SellerId;
+    const storeName = await getValueByUserId("Username", sellerId);
 
     console.log(productPrice)
     // Fill in all the values that must be generated from us
-    invoice.InvoiceId = generateId(35)
-    invoice.InvoiceKey = generateId(12)
+    const invoiceId = generateId(35)
+    const invoiceKey = generateId(12)
+    invoice.InvoiceId = invoiceId
+    invoice.InvoiceKey = invoiceKey
     invoice.InvoiceStatus = "Not Paid"
     invoice.CreationDate = new Date()
     invoice.SellerId = sellerId
@@ -49,7 +54,8 @@ invoiceRoutes.post("/", async (req, res) => {
     try
     {
         await createInvoice(invoice)
-        await sendEmail(invoice.CustomerEmail, `Your order ${invoice.InvoiceId}`, "You Created and order")
+        const invoiceUrl = `${FRONT_END_URL}/${storeName}/invoice/${invoiceId}-${invoiceKey}`;
+        await sendEmail(invoice.CustomerEmail, `Your order ${invoice.InvoiceId}`, `Order Link: ${invoiceUrl}`)
         return res.status(200).json({message: "Successfully Created"})
     }catch(err){
         console.log(err)

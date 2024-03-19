@@ -4,10 +4,6 @@ const { getProductsBySellerId } = require('../database/product');
 
 const userRoutes    = express.Router()
 
-userRoutes.get("/", async (req, res) => {
-    res.send("User")
-})
-
 userRoutes.get("/:username/all", async (req, res) => {
     const username = req.params.username
     const user = await getUserByUsername(username)

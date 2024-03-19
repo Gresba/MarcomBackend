@@ -5,9 +5,18 @@ const { generateId } = require('../utils/generateId');
  * The file is to store all the functions that run creates related the users
  * 
  * Author: Paul Kim
- * Last modified: 2/26/2024
+ * Last modified: 3/19/2024
  * To Do(s):
  */
+
+async function getValueByUserId(value, id)
+{
+    const response = await dbConnection.query(
+        `SELECT ${value} FROM User
+        WHERE UserId = ?`, [id]
+    )
+    return response[0][0][value]
+}
 
 /**
  * Retrieve a user based on the user id provided
@@ -109,5 +118,6 @@ module.exports = {
     getUserByEmail,
     createUser,
     updateUserById,
-    deleteUserById
+    deleteUserById,
+    getValueByUserId
 }
