@@ -32,17 +32,22 @@ invoiceRoutes.post("/", async (req, res) => {
     const creationDate = new Date()
     console.log(creationDate)
 
-    const productPrice = await getProductPriceByProductId(invoice.ProductId)
+    const product = await getProductById(invoice.ProductId)
+    const productPrice = product.Price
+    const sellerId = product.SellerId;
 
+    console.log(productPrice)
     // Fill in all the values that must be generated from us
     invoice.InvoiceId = generateId(35)
     invoice.InvoiceKey = generateId(12)
     invoice.InvoiceStatus = "Not Paid"
     invoice.CreationDate = new Date()
+    invoice.SellerId = sellerId
     invoice.invoicePrice = productPrice * invoice.Quantity
 
     // Save the invoice into the database
-    try{
+    try
+    {
         await createInvoice(invoice)
         await sendEmail(invoice.CustomerEmail, `Your order ${invoice.InvoiceId}`, "You Created and order")
         return res.status(200).json({message: "Successfully Created"})

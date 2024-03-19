@@ -50,7 +50,6 @@ productRoutes.get("/:productId", async (req, res) => {
     const productId = req.params.productId
 
     const product = await getProductById(productId)
-    
     return res.status(200).json(product)
 })
 
@@ -66,7 +65,6 @@ productRoutes.put("/:productId", async (req, res) => {
         console.log(err)
         return res.status(500).json({ message: "Internal Server Error"})
     }
-
 })
 
 productRoutes.post("/", upload.single('image'), jwtSellerAuthorization, async (req, res) => {

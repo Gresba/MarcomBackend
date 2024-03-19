@@ -1,4 +1,3 @@
-const { generateId } = require("../utils/generateId")
 const { dbConnection } = require("./connection")
 /**
  * The file is to store all the functions that run creates related the products
