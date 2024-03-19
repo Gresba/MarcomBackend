@@ -5,9 +5,19 @@ const { dbConnection } = require("./connection")
  * This file will be used to store all the functions which will create queries related to invoices
  * 
  * Author:
- * Last modified: 3/10/2024
+ * Last modified: 3/19/2024
  * To Do(s):
  */
+
+async function getValueByInvoiceId(value, invoiceId)
+{
+    const response = await dbConnection.query(
+        `SELECT ${value} FROM Invoice
+        WHERE InvoiceId = ?`, [invoiceId]
+    )
+    console.log(response[0][0])
+    return response[0][0][value]
+}
 
 async function createInvoice(invoice)
 {
@@ -38,5 +48,6 @@ async function getInvoiceById(invoiceId)
 module.exports = {
     createInvoice,
     getInvoiceKey,
-    getInvoiceById
+    getInvoiceById,
+    getValueByInvoiceId
 }
