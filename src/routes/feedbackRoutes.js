@@ -7,7 +7,7 @@
  */
 const express           = require('express');
 const { jwtGetInvoiceFilter, jwtPostFeedbackFilter } = require('../requestFilters/security');
-const { getValueByInvoiceId } = require('../database/invoiceQueries');
+const { getValueByInvoiceId, updateFeedbackById } = require('../database/invoiceQueries');
 const { createFeedback } = require('../database/feedback');
 const { generateId } = require('../utils/generateId');
 
@@ -25,22 +25,23 @@ const feedbackRoutes    = express.Router()
 feedbackRoutes.post("/", jwtPostFeedbackFilter,async (req, res) => {
     try{
         const rating = req.body
-        const invoiceId = req.InvoiceId
+        const invoiceId = rating.InvoiceId
+        console.log(rating)
         console.log(invoiceId)
         const SellerId = await getValueByInvoiceId("SellerId", invoiceId)
         const ProductId = await getValueByInvoiceId("ProductId", invoiceId)
+        const feedbackId = generateId(35);
 
-        console.log(SellerId)
-        console.log(ProductId)
         const dateCreated = new Date()
         rating.DateCreated = dateCreated;
-        rating.FeedbackId = generateId(35);
+        rating.FeedbackId = feedbackId;
         rating.InvoiceId = invoiceId
         rating.SellerId = SellerId
         rating.ProductId = ProductId 
         console.log(rating)
 
         const response = await createFeedback(rating)
+        await updateFeedbackById(invoiceId, feedbackId)
         console.log(response)
         res.status(200).json({ message: "Created Feedback" })
     }catch(e){

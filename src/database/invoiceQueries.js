@@ -1,4 +1,3 @@
-const { generateId } = require("../utils/generateId")
 const { dbConnection } = require("./connection")
 
 /**
@@ -45,9 +44,20 @@ async function getInvoiceById(invoiceId)
     return response[0][0];
 }
 
+async function updateFeedbackById(invoiceId, feedbackId)
+{
+    const response = await dbConnection.query(
+        `UPDATE Invoice
+        SET FeedbackId = ?
+        WHERE InvoiceId = ?`, [feedbackId, invoiceId]
+    )
+    return response
+}
+
 module.exports = {
     createInvoice,
     getInvoiceKey,
     getInvoiceById,
-    getValueByInvoiceId
+    getValueByInvoiceId,
+    updateFeedbackById
 }

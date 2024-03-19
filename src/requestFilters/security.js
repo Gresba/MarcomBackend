@@ -133,7 +133,7 @@ async function jwtPostFeedbackFilter(req, res, next)
         const invoiceKey = await getInvoiceKey(invoiceId)
         if(key === invoiceKey)
         {
-            req.InvoiceId = invoiceId
+            req.body.InvoiceId = invoiceId
             req.authorized = true;
             console.log("true")
             next();
