@@ -5,7 +5,7 @@ const { createMessage } = require("./message")
  * The file is to store all the functions that run queries related to a Query
  * 
  * Author: Paul Kim
- * Last modified: 3/5/2024
+ * Last modified: 3/21/2024
  * To Do(s):
  */
 
@@ -29,9 +29,15 @@ async function getQueriesBySellerId(sellerId)
     }
 }
 
-/**
- * 
- */
+async function getQueryById(queryId)
+{
+    const response = await dbConnection.query(
+        `SELECT * FROM Query
+        WHERE QueryId = ?`, [queryId]
+    )
+    return response[0][0]
+}
+
 async function createQuery(newQuery)
 {
     try{
@@ -53,5 +59,6 @@ async function createQuery(newQuery)
 
 module.exports = {
     createQuery,
+    getQueryById,
     getQueriesBySellerId
 }

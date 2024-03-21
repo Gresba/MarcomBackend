@@ -8,17 +8,36 @@
  */
 const express       = require('express');
 const { getUserByUsername } = require('../database/userQueries');
-const { createQuery, getQueriesBySellerId } = require('../database/queries');
+const { createQuery, getQueriesBySellerId, getQueryById } = require('../database/queries');
 const { jwtSellerAuthorization } = require('../requestFilters/security');
 
 const queryRoutes = express.Router()
 
+/**
+ * Route to get all queries that belong to a seller by using the jwtSellerAuthorization filter
+ */
 queryRoutes.get("/", jwtSellerAuthorization, async(req, res) => {
     const user = req.decoded
     const userId = user.id;
 
+    // Get all the queries that belong to the seller
     const response = await getQueriesBySellerId(userId)
     return res.status(200).send(response)
+})
+
+/**
+ * Route to get a query by Id
+ */
+queryRoutes.get("/:queryId", async (req, res) => {
+    try{
+        const queryId = req.params.queryId;
+        const query = await getQueryById(queryId)
+        
+        return res.status(200).json(query)
+    }catch(err){
+        console.log(err)
+        return res.status(500).json({message: 'Could not retrieve query'})
+    }
 })
 
 queryRoutes.post("/", async (req, res) => {
