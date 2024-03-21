@@ -6,7 +6,7 @@ config()
  * so it can easily be access in the code and the constants don't need to be defined repeatedly.
  * 
  * Author: Paul Kim
- * Last Modified: 2/26/2024
+ * Last Modified: 3/21/2024
  * To DO:
  */
 
@@ -42,5 +42,5 @@ module.exports = {
     HASH_NONCE,
     FRONT_END_URL,
     PORT,
-    ROLES
+    ROLES,
 }

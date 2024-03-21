@@ -42,7 +42,7 @@ async function createQuery(newQuery)
             VALUES (?, ?, ?, ?, ?)`, 
             [queryId, newQuery.Email, "Unresolved", newQuery.Reason, newQuery.sellerId]
         )
-        console.log(response)
+
         await createMessage(queryId, newQuery.Email, newQuery.Content)
         return response[0]
     }catch(err){

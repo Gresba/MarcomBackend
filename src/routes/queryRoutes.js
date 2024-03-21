@@ -31,8 +31,6 @@ queryRoutes.post("/", async (req, res) => {
 
     // Pull the seller id from the shop name
     newQuery.sellerId = seller.UserId
-    console.log(seller)
-    console.log(newQuery)
 
     const response = await createQuery(newQuery)
     console.log(response)
