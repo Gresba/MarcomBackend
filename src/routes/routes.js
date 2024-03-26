@@ -1,5 +1,5 @@
 const { Router }        = require('express')
-const { authRoutes } = require('./authRoutes')
+const { authRoutes } = require('../utils/authRoutes')
 const { productRoutes } = require('./productRoutes')
 const { invoiceRoutes } = require('./invoiceRoutes')
 const { userRoutes } = require('./userRoutes')

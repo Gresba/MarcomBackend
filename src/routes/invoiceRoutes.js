@@ -11,7 +11,7 @@ const { createInvoice, getInvoiceById } = require('../database/invoiceQueries');
 const { getProductById } = require('../database/product');
 const { generateId } = require('../utils/generateId');
 const { jwtGetInvoiceFilter } = require('../requestFilters/security');
-const { sendEmail } = require('../constants/emailer');
+const { sendEmail } = require('./emailer');
 const { getValueByUserId } = require('../database/userQueries');
 const { FRONT_END_URL } = require('../constants/config');
 

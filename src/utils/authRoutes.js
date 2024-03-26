@@ -1,9 +1,9 @@
 const express       = require('express');
 
 const { createUser, getUserByEmail, getUserByUsername } = require('../database/userQueries');
-const { log } = require('../utils/consoleLogger');
-const { generateJwtToken } = require('../utils/jwtTokens');
-const { hashString } = require('../utils/encrypt');
+const { log } = require('./consoleLogger');
+const { generateJwtToken } = require('./jwtTokens');
+const { hashString } = require('./encrypt');
 
 const authRoutes    = express.Router()
 

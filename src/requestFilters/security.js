@@ -33,7 +33,6 @@ function jwtSellerAuthorization(req, res, next)
             }
             
             // Append the info to the request
-            console.log("Image Up")
             req.decoded = decoded
             next();
         });

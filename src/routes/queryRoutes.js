@@ -28,11 +28,15 @@ queryRoutes.get("/", jwtSellerAuthorization, async(req, res) => {
 /**
  * Route to get a query by Id
  */
-queryRoutes.get("/:queryId", async (req, res) => {
-    try{
+queryRoutes.get("/:queryId", async (req, res) => 
+{
+    try
+    {
         const queryId = req.params.queryId;
         const query = await getQueryById(queryId)
         
+        if(!query)
+            return res.status(404).json({message: "Query not found"})
         return res.status(200).json(query)
     }catch(err){
         console.log(err)
@@ -40,7 +44,8 @@ queryRoutes.get("/:queryId", async (req, res) => {
     }
 })
 
-queryRoutes.post("/", async (req, res) => {
+queryRoutes.post("/", async (req, res) => 
+{
     const newQuery = req.body
 
     const seller = await getUserByUsername(newQuery.StoreName)

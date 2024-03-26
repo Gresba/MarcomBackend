@@ -2,28 +2,70 @@ const express       = require('express');
 const { jwtSellerAuthorization } = require('../requestFilters/security');
 const { getMessagesByQueryId, createMessage } = require('../database/message');
 const { generateId } = require('../utils/generateId');
+const { queryAuthorizationFilter } = require('../requestFilters/messageFilters');
+const { getQueryById } = require('../database/queries');
 
 const messageRoutes = express.Router()
 
-messageRoutes.get("/:queryId", jwtSellerAuthorization, async (req, res) => {
+// Get all the messages that belong to a query.
+messageRoutes.get("/:queryId", async (req, res) => {
     const queryId = req.params.queryId;
 
     try{
+        // Get messages from the database
         const messages = await getMessagesByQueryId(queryId)
+
+        // If there are no messages then return a 404
+        if(messages.length === 0)
+        {
+            return res.status(404).json(
+                {
+                    message: "Query Not Found"
+                })
+        }
+
+        // If there are no issues with retrieving the messages, return a 200
         return res.status(200).json(messages)
+
+    // If there are any errors return a 500
     }catch(err){
         console.log(err)
         return res.status(500).json({message: "Error getting messages"});
     }
 })
 
-messageRoutes.post("/:queryId", jwtSellerAuthorization, async (req, res) => {
+// Route to post new messages to a query
+messageRoutes.post("/:queryId", queryAuthorizationFilter, async (req, res) => 
+{
     const queryId = req.params.queryId;
-    const author = req.decoded.username;
     const content = req.body.Content
+
+    console.log("fdsf")
+
+    let author;
+
+    let query = await getQueryById(queryId);
+
+    if(!query)
+    {
+        return res.status(404).json({message: "Query not found"})
+    }
+
+    if(!content || content === "")
+    {
+        return res.status(400).json({message: "No content"})
+    }
+
+    if(req.decoded)
+    {
+        author = req.decoded.username;
+    }else{
+        author = query.Email
+    }
 
     try{
         await createMessage(queryId, author, content)
+
         return res.status(200).json({message: "Successfully created message!"})
     }catch(err){
         console.log(err)

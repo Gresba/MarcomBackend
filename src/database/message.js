@@ -22,6 +22,7 @@ async function createMessage(queryId, author, content)
             VALUES (?, ?, ?, ?, ?)`, 
             [messageId, author, content, messageCreationDate, queryId]
         )
+        console.log("f")
         console.log(response)
         return response[0]
     }catch(err){
@@ -37,7 +38,6 @@ async function getMessagesByQueryId(queryId)
         WHERE QueryId = ?
         ORDER BY DateCreated`, [queryId]
     )
-    console.log(response)
     return response[0]
 }
 
