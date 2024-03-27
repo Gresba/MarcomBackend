@@ -10,6 +10,9 @@ const express       = require('express');
 const { getUserByUsername } = require('../database/userQueries');
 const { createQuery, getQueriesBySellerId, getQueryById } = require('../database/queries');
 const { jwtSellerAuthorization } = require('../requestFilters/security');
+const { sendEmail } = require('../utils/emailer');
+const { FRONT_END_URL } = require('../constants/config');
+const { generateId } = require('../utils/generateId');
 
 const queryRoutes = express.Router()
 
@@ -46,7 +49,16 @@ queryRoutes.get("/:queryId", async (req, res) =>
 
 queryRoutes.post("/", async (req, res) => 
 {
+    const queryId = generateId(20)
+
     const newQuery = req.body
+    const email = newQuery.Email;
+    const reason = newQuery.Reason;
+
+    if(!email || !reason || email === "" || reason === "")
+    {
+        return res.status(400).json({ message: "Missing Email or Reason"})
+    }
 
     const seller = await getUserByUsername(newQuery.StoreName)
     
@@ -56,10 +68,13 @@ queryRoutes.post("/", async (req, res) =>
     // Pull the seller id from the shop name
     newQuery.sellerId = seller.UserId
 
-    const response = await createQuery(newQuery)
-    console.log(response)
+    await createQuery(queryId, newQuery)
 
-    res.send("Success")
+    const emailMessage = `You contacted ${newQuery.StoreName}. View your conversation here ${FRONT_END_URL}/${newQuery.StoreName}/contact/${queryId}`
+
+    await sendEmail(email, reason, emailMessage)
+
+    res.status(200).send("Success")
 })
 
 module.exports = {

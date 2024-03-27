@@ -38,11 +38,9 @@ async function getQueryById(queryId)
     return response[0][0]
 }
 
-async function createQuery(newQuery)
+async function createQuery(queryId, newQuery)
 {
     try{
-        const queryId = generateId(20)
-
         const response = await dbConnection.query(
             `INSERT INTO Query (QueryId, Email, QueryStatus, Reason, SellerId)
             VALUES (?, ?, ?, ?, ?)`, 
