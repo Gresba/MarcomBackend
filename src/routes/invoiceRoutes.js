@@ -7,10 +7,10 @@
  * - Implement get invoice routes
  */
 const express       = require('express');
-const { createInvoice, getInvoiceById } = require('../database/invoiceQueries');
+const { createInvoice, getInvoiceById, getInvoicesBySellerId } = require('../database/invoiceQueries');
 const { getProductById } = require('../database/product');
 const { generateId } = require('../utils/generateId');
-const { jwtGetInvoiceFilter } = require('../requestFilters/security');
+const { jwtGetInvoiceFilter, jwtSellerAuthorization } = require('../requestFilters/security');
 const { sendEmail } = require('../utils/emailer');
 const { getValueByUserId } = require('../database/userQueries');
 const { FRONT_END_URL } = require('../constants/config');
@@ -63,12 +63,40 @@ invoiceRoutes.post("/", async (req, res) => {
     }
 })
 
+/**
+ * Get a specific invoice by it's id
+ */
 invoiceRoutes.get("/:invoiceId", jwtGetInvoiceFilter ,async (req, res) => {
     const invoiceId = req.params.invoiceId.split("-")[0]
     try{
         const invoice = await getInvoiceById(invoiceId)
         console.log(invoice)
         return res.status(200).json(invoice)
+    }catch(err){
+        console.log(err)
+        return res.status(500).json({message: "Internal Server Error"})
+    }
+})
+
+/**
+ * Route to get all the invoices that belong to a seller
+ * 
+ * Uses jwtSellerAuthorization to extract the seller from the JWT Token passed from the frontend
+ */
+invoiceRoutes.get("/", jwtSellerAuthorization ,async (req, res) => {
+
+    /*
+     * req.decoded was created in jwtSellerAuthorization so check the code there to see how to was created
+     */
+    const user = req.decoded
+
+    // UserId or SellerId
+    const userId = user.id;
+
+    try{
+        const invoices = await getInvoicesBySellerId(userId)
+        console.log(invoices)
+        return res.status(200).json(invoices)
     }catch(err){
         console.log(err)
         return res.status(500).json({message: "Internal Server Error"})

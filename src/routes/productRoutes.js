@@ -34,7 +34,7 @@ const storage = multer.diskStorage(
 const upload = multer({ storage: storage });
 
 productRoutes.get("/", jwtSellerAuthorization, async(req, res) => {
-    log("Attempted")
+    log("Accessing Product Route For Sellers")
     const user = req.decoded
     const userId = user.id;
 

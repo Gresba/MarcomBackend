@@ -12,7 +12,7 @@ const { getInvoiceKey } = require('../database/invoiceQueries');
  */
 function jwtSellerAuthorization(req, res, next)
 {
-    // Pull the authorization header from the request
+    // Pull the authorization header from the request which is the JWT Token
     const token = req.headers.authorization;
 
     // Check if the header exist
