@@ -1,3 +1,4 @@
+const { ROLES } = require("../constants/config");
 const { dbConnection } = require("./connection")
 
 /**
@@ -8,12 +9,37 @@ const { dbConnection } = require("./connection")
  * To Do(s):
  */
 
-async function getInvoicesBySellerId(sellerId)
+async function getInvoicesByUserId(userType, userId)
+{
+    let query;
+    if(userType === ROLES.CUSTOMER)
+    {
+        query = `SELECT Invoice.*, Product.Title 
+                FROM Invoice 
+                JOIN Product
+                ON Invoice.ProductId = Product.ProductId
+                WHERE CustomerId = ?`
+    }else if(userType === ROLES.SELLER){
+        query = `SELECT Invoice.*, Product.Title 
+                FROM Invoice 
+                JOIN Product
+                ON Invoice.ProductId = Product.ProductId
+                WHERE SellerId = ?`
+    }
+
+    const response = await dbConnection.query(
+        query, [userId]
+    )
+    return response[0]
+}
+
+async function getInvoicesByEmail(email)
 {
     const response = await dbConnection.query(
         `SELECT * FROM Invoice
-        WHERE SellerId = ?`, [sellerId]
+        WHERE CustomerEmail = ? AND CustomerId IS NULL`, [email]
     )
+    console.log(response)
     return response[0]
 }
 
@@ -25,6 +51,17 @@ async function getValueByInvoiceId(value, invoiceId)
         WHERE InvoiceId = ?`, [invoiceId]
     )
     return response[0][0][value]
+}
+
+async function updateInvoiceByInvoiceId(field, value, invoiceId)
+{
+    const query = `UPDATE Invoice SET ${field} = ? WHERE InvoiceId = ?`
+
+    const response = dbConnection.query(
+        query, [value, invoiceId]
+    )
+    console.log(response[0])
+    return response;
 }
 
 async function createInvoice(invoice)
@@ -69,5 +106,7 @@ module.exports = {
     getInvoiceById,
     getValueByInvoiceId,
     updateFeedbackById,
-    getInvoicesBySellerId
+    updateInvoiceByInvoiceId,
+    getInvoicesByUserId,
+    getInvoicesByEmail
 }

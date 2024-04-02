@@ -7,13 +7,14 @@
  * - Implement get invoice routes
  */
 const express       = require('express');
-const { createInvoice, getInvoiceById, getInvoicesBySellerId } = require('../database/invoiceQueries');
+const { createInvoice, getInvoiceById, getInvoicesByUserId, updateInvoiceByInvoiceId, getInvoicesByEmail } = require('../database/invoiceQueries');
 const { getProductById } = require('../database/product');
 const { generateId } = require('../utils/generateId');
-const { jwtGetInvoiceFilter, jwtSellerAuthorization } = require('../requestFilters/security');
+const { jwtGetInvoiceFilter } = require('../requestFilters/security');
 const { sendEmail } = require('../utils/emailer');
 const { getValueByUserId } = require('../database/userQueries');
-const { FRONT_END_URL } = require('../constants/config');
+const { FRONT_END_URL, ROLES } = require('../constants/config');
+const { jwtSellerAndCustomerFilter } = require('../requestFilters/invoiceFilters');
 
 const invoiceRoutes = express.Router()
 
@@ -31,15 +32,11 @@ invoiceRoutes.post("/", async (req, res) => {
     const invoice = req.body;
     console.log(invoice)
 
-    const creationDate = new Date()
-    console.log(creationDate)
-
     const product = await getProductById(invoice.ProductId)
     const productPrice = product.Price
     const sellerId = product.SellerId;
     const storeName = await getValueByUserId("Username", sellerId);
 
-    console.log(productPrice)
     // Fill in all the values that must be generated from us
     const invoiceId = generateId(35)
     const invoiceKey = generateId(12)
@@ -66,7 +63,7 @@ invoiceRoutes.post("/", async (req, res) => {
 /**
  * Get a specific invoice by it's id
  */
-invoiceRoutes.get("/:invoiceId", jwtGetInvoiceFilter ,async (req, res) => {
+invoiceRoutes.get("/:invoiceId", jwtGetInvoiceFilter, async (req, res) => {
     const invoiceId = req.params.invoiceId.split("-")[0]
     try{
         const invoice = await getInvoiceById(invoiceId)
@@ -79,22 +76,39 @@ invoiceRoutes.get("/:invoiceId", jwtGetInvoiceFilter ,async (req, res) => {
 })
 
 /**
- * Route to get all the invoices that belong to a seller
+ * Route to get all the invoices that belong to a user
  * 
- * Uses jwtSellerAuthorization to extract the seller from the JWT Token passed from the frontend
+ * Uses jwtSellerAndCustomerFilter to extract the user from the JWT Token passed from the frontend
  */
-invoiceRoutes.get("/", jwtSellerAuthorization ,async (req, res) => {
-
+invoiceRoutes.get("/", jwtSellerAndCustomerFilter, async (req, res) => 
+{
+    console.log("Accessed")
     /*
-     * req.decoded was created in jwtSellerAuthorization so check the code there to see how to was created
+     * req.decoded was created in jwtSellerAndCustomerFilter so check the code there to see how to was created
      */
     const user = req.decoded
 
-    // UserId or SellerId
-    const userId = user.id;
-
     try{
-        const invoices = await getInvoicesBySellerId(userId)
+        // UserId or SellerId
+        const userId = user.id;
+
+        let invoices = []
+        const userRole = user.role;
+        const userEmail = user.user;
+        if(userRole === ROLES.CUSTOMER)
+        {
+            const invoicesByEmail = await getInvoicesByEmail(userEmail)
+            for(let i = 0; i < invoicesByEmail.length; i++)
+            {
+                const targetInvoice = invoicesByEmail[i];
+                await updateInvoiceByInvoiceId('CustomerId', userId, targetInvoice.InvoiceId)
+            }
+            invoices = invoicesByEmail
+        }
+
+        const invoicesByUserId = await getInvoicesByUserId(userRole, userId)
+        invoices = [...invoices, ...invoicesByUserId]
+
         console.log(invoices)
         return res.status(200).json(invoices)
     }catch(err){
