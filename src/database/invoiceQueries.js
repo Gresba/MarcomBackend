@@ -14,17 +14,17 @@ async function getInvoicesByUserId(userType, userId)
     let query;
     if(userType === ROLES.CUSTOMER)
     {
-        query = `SELECT Invoice.*, Product.Title 
+        query = `SELECT Invoice.*, Product.Title
                 FROM Invoice 
                 JOIN Product
                 ON Invoice.ProductId = Product.ProductId
-                WHERE CustomerId = ?`
+                WHERE Invoice.CustomerId = ?`
     }else if(userType === ROLES.SELLER){
         query = `SELECT Invoice.*, Product.Title 
                 FROM Invoice 
                 JOIN Product
                 ON Invoice.ProductId = Product.ProductId
-                WHERE SellerId = ?`
+                WHERE Invoice.SellerId = ?`
     }
 
     const response = await dbConnection.query(

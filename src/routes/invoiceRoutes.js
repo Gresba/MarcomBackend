@@ -30,7 +30,6 @@ invoiceRoutes.post("/", async (req, res) => {
 
     // Extracting the body from the request
     const invoice = req.body;
-    console.log(invoice)
 
     const product = await getProductById(invoice.ProductId)
     const productPrice = product.Price
@@ -40,6 +39,7 @@ invoiceRoutes.post("/", async (req, res) => {
     // Fill in all the values that must be generated from us
     const invoiceId = generateId(35)
     const invoiceKey = generateId(12)
+    
     invoice.InvoiceId = invoiceId
     invoice.InvoiceKey = invoiceKey
     invoice.InvoiceStatus = "Not Paid"
