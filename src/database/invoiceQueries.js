@@ -14,7 +14,7 @@ async function getInvoicesByUserId(userType, userId)
     let query;
     if(userType === ROLES.CUSTOMER)
     {
-        query = `SELECT Invoice.*, Product.Title
+        query = `SELECT Invoice.*, Product.Title, Product.ProductImage 
                 FROM Invoice 
                 JOIN Product
                 ON Invoice.ProductId = Product.ProductId
