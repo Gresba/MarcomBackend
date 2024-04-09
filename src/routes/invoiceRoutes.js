@@ -69,10 +69,14 @@ invoiceRoutes.post("/", jwtOrderCreationFilter, async (req, res) => {
  */
 invoiceRoutes.get("/:invoiceId", jwtGetInvoiceFilter, async (req, res) => {
     const invoiceId = req.params.invoiceId.split("-")[0]
+    const user = req.decoded
     try{
         const invoice = await getInvoiceById(invoiceId)
-        console.log(invoice)
-        return res.status(200).json(invoice)
+
+        if(invoice.CustomerId === user.id)
+            return res.status(200).json(invoice)
+        else
+            return res.status(403).json({message: "Unable to access order"})
     }catch(err){
         console.log(err)
         return res.status(500).json({message: "Internal Server Error"})
