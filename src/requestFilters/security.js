@@ -1,7 +1,6 @@
 const jwt           = require('jsonwebtoken');
 
 const { JWT_SECRET, ROLES } = require('../constants/config');
-const { getInvoiceKey } = require('../database/invoiceQueries');
 
 /**
  * Filter to be used for routes that should only be accessible to users
@@ -60,7 +59,7 @@ async function jwtGetInvoiceFilter(req, res, next)
             }
 
             // If the role associated with the JWT token !== the USER ROLE
-            if(decoded.role !== ROLES.SELLER)
+            if(decoded.role !== ROLES.SELLER && decoded.role !== ROLES.CUSTOMER)
             {
                 return res.status(403).send("Insufficient")
             }
@@ -73,22 +72,7 @@ async function jwtGetInvoiceFilter(req, res, next)
     
     // If header doesn't exist deny authorization to the route
     }else{
-        const invoiceString = req.params.invoiceId;
-        const invoiceId = invoiceString.split("-")[0]
-        const key = invoiceString.split("-")[1]
-
-        console.log(invoiceId)
-        console.log(key)
-
-        const invoiceKey = await getInvoiceKey(invoiceId)
-        if(key === invoiceKey)
-        {
-            req.authorized = true;
-            console.log("true")
-            next();
-        }else{
-            return res.status(403).send("Insufficient Permissions")
-        }
+        return res.status(401).send("Invaid JWT Token")
     }
 }
 
@@ -119,26 +103,6 @@ async function jwtPostFeedbackFilter(req, res, next)
             req.decoded = decoded
             next();
         });
-    
-    // If header doesn't exist deny authorization to the route
-    }else{
-        const invoiceString = req.body.InvoiceId;
-        const invoiceId = invoiceString.split("-")[0]
-        const key = invoiceString.split("-")[1]
-
-        console.log(invoiceId)
-        console.log(key)
-
-        const invoiceKey = await getInvoiceKey(invoiceId)
-        if(key === invoiceKey)
-        {
-            req.body.InvoiceId = invoiceId
-            req.authorized = true;
-            console.log("true")
-            next();
-        }else{
-            return res.status(403).send("Insufficient Permissions")
-        }
     }
 }
 

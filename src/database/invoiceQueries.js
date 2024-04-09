@@ -72,15 +72,6 @@ async function createInvoice(invoice)
     return response;
 }
 
-async function getInvoiceKey(invoiceId)
-{
-    const response = await dbConnection.query(
-        `SELECT InvoiceKey FROM Invoice
-        WHERE InvoiceId = ?`, [invoiceId]
-    )
-    return response[0][0].InvoiceKey;
-}
-
 async function getInvoiceById(invoiceId)
 {
     const response = await dbConnection.query(
@@ -102,7 +93,6 @@ async function updateFeedbackById(invoiceId, feedbackId)
 
 module.exports = {
     createInvoice,
-    getInvoiceKey,
     getInvoiceById,
     getValueByInvoiceId,
     updateFeedbackById,

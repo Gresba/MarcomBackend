@@ -15,6 +15,7 @@ const { sendEmail } = require('../utils/emailer');
 const { getValueByUserId } = require('../database/userQueries');
 const { FRONT_END_URL, ROLES } = require('../constants/config');
 const { jwtSellerAndCustomerFilter } = require('../requestFilters/invoiceFilters');
+const { jwtOrderCreationFilter } = require('../requestFilters/orderFilter');
 
 const invoiceRoutes = express.Router()
 
@@ -26,7 +27,10 @@ const invoiceRoutes = express.Router()
  * Creating POST route for creating invoices. 
  * Anyone should be able to access so do not add any filters
  */
-invoiceRoutes.post("/", async (req, res) => {
+invoiceRoutes.post("/", jwtOrderCreationFilter, async (req, res) => {
+
+    const user = req.decoded
+    const userId = user.id;
 
     // Extracting the body from the request
     const invoice = req.body;
@@ -37,11 +41,11 @@ invoiceRoutes.post("/", async (req, res) => {
     const storeName = await getValueByUserId("Username", sellerId);
 
     // Fill in all the values that must be generated from us
-    const invoiceId = generateId(35)
-    const invoiceKey = generateId(12)
+    const invoiceId = generateId(35);
     
-    invoice.InvoiceId = invoiceId
-    invoice.InvoiceKey = invoiceKey
+    invoice.InvoiceId = invoiceId;
+    invoice.CustomerId = userId;
+    invoice.CustomerEmail = user.user;
     invoice.InvoiceStatus = "Not Paid"
     invoice.CreationDate = new Date()
     invoice.SellerId = sellerId
@@ -51,9 +55,9 @@ invoiceRoutes.post("/", async (req, res) => {
     try
     {
         await createInvoice(invoice)
-        const invoiceUrl = `${FRONT_END_URL}/${storeName}/invoice/${invoiceId}-${invoiceKey}`;
+        const invoiceUrl = `${FRONT_END_URL}/${storeName}/order/${invoiceId}`;
         await sendEmail(invoice.CustomerEmail, `Your order ${invoice.InvoiceId}`, `Order Link: ${invoiceUrl}`)
-        return res.status(200).json({message: "Successfully Created"})
+        return res.status(302).json({message: "Successfully Created", link: invoiceUrl})
     }catch(err){
         console.log(err)
         return res.status(500).json({message: "Error saving invoice"})
