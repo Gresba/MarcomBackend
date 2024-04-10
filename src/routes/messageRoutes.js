@@ -1,9 +1,10 @@
 const express       = require('express');
-const { jwtSellerAuthorization } = require('../requestFilters/security');
+const { jwtSellerAndCustomerAuthorization } = require('../requestFilters/security');
 const { getMessagesByQueryId, createMessage } = require('../database/message');
-const { generateId } = require('../utils/generateId');
 const { queryAuthorizationFilter } = require('../requestFilters/messageFilters');
 const { getQueryById } = require('../database/queries');
+const { ROLES } = require('../constants/config');
+const { getUserById } = require('../database/userQueries');
 
 const messageRoutes = express.Router()
 
@@ -39,8 +40,7 @@ messageRoutes.post("/:queryId", queryAuthorizationFilter, async (req, res) =>
 {
     const queryId = req.params.queryId;
     const content = req.body.Content
-
-    console.log("fdsf")
+    const user = req.decoded
 
     let author;
 
@@ -56,12 +56,15 @@ messageRoutes.post("/:queryId", queryAuthorizationFilter, async (req, res) =>
         return res.status(400).json({message: "No content"})
     }
 
-    if(req.decoded)
+    if(user.role === ROLES.CUSTOMER)
     {
-        author = req.decoded.username;
-    }else{
         author = query.Email
+    }else if(user.role === ROLES.SELLER){
+        const seller = await getUserById(query.SellerId)
+        author = seller.Username;
     }
+
+
 
     try{
         await createMessage(queryId, author, content)

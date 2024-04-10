@@ -90,7 +90,6 @@ invoiceRoutes.get("/:invoiceId", jwtGetInvoiceFilter, async (req, res) => {
  */
 invoiceRoutes.get("/", jwtSellerAndCustomerFilter, async (req, res) => 
 {
-    console.log("Accessed")
     /*
      * req.decoded was created in jwtSellerAndCustomerFilter so check the code there to see how to was created
      */

@@ -19,7 +19,7 @@ function queryAuthorizationFilter(req, res, next)
             }
 
             // If the role associated with the JWT token !== the USER ROLE
-            if(decoded.role !== ROLES.SELLER)
+            if(decoded.role !== ROLES.SELLER && decoded.role !== ROLES.CUSTOMER)
             {
                 return res.status(403).send("Insufficient Permissions")
             }
@@ -29,7 +29,7 @@ function queryAuthorizationFilter(req, res, next)
             next();
         });
     }else{
-        next();
+        return res.status(401).send("Invaid JWT Token")
     }
 }
 

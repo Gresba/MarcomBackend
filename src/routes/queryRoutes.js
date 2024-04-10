@@ -8,24 +8,40 @@
  */
 const express       = require('express');
 const { getUserByUsername } = require('../database/userQueries');
-const { createQuery, getQueriesBySellerId, getQueryById } = require('../database/queries');
-const { jwtSellerAuthorization } = require('../requestFilters/security');
+const { createQuery, getQueryById, getQueriesBySellerId, getQueriesByCustomerEmail } = require('../database/queries');
+const { jwtSellerAndCustomerAuthorization } = require('../requestFilters/security');
 const { sendEmail } = require('../utils/emailer');
-const { FRONT_END_URL } = require('../constants/config');
+const { FRONT_END_URL, ROLES } = require('../constants/config');
 const { generateId } = require('../utils/generateId');
 
 const queryRoutes = express.Router()
 
 /**
- * Route to get all queries that belong to a seller by using the jwtSellerAuthorization filter
+ * Route to get all queries that belong to a seller by using the jwtSellerAndCustomerAuthorization filter
  */
-queryRoutes.get("/", jwtSellerAuthorization, async(req, res) => {
+queryRoutes.get("/", jwtSellerAndCustomerAuthorization, async(req, res) => {
     const user = req.decoded
     const userId = user.id;
+    const email = user.user;
 
-    // Get all the queries that belong to the seller
-    const response = await getQueriesBySellerId(userId)
-    return res.status(200).send(response)
+    try
+    {
+        if(user.role === ROLES.SELLER)
+        {
+            // Get all the queries that belong to the seller
+            const response = await getQueriesBySellerId(userId)
+            return res.status(200).json(response)
+        }else if(user.role === ROLES.CUSTOMER){
+            // Get all the queries that belong to the seller
+            const response = await getQueriesByCustomerEmail(email)
+            return res.status(200).json(response)
+        }
+    }catch(err){
+        console.log("Seller")
+
+        console.log(err)
+        return res.status(500).json({message: "Internal Server Error"})
+    }
 })
 
 /**
@@ -55,7 +71,7 @@ queryRoutes.post("/", async (req, res) =>
     const email = newQuery.Email;
     const reason = newQuery.Reason;
 
-    if(!email || !reason || email === "" || reason === "")
+    if(!reason || reason === "")
     {
         return res.status(400).json({ message: "Missing Email or Reason"})
     }
@@ -70,11 +86,12 @@ queryRoutes.post("/", async (req, res) =>
 
     await createQuery(queryId, newQuery)
 
-    const emailMessage = `You contacted ${newQuery.StoreName}. View your conversation here ${FRONT_END_URL}/${newQuery.StoreName}/contact/${queryId}`
+    const inquiryLink = `${FRONT_END_URL}/customer/messages/${queryId}`
+    const emailMessage = `You contacted ${newQuery.StoreName}. View your conversation here ${inquiryLink}`
 
     await sendEmail(email, reason, emailMessage)
 
-    res.status(200).send("Success")
+    res.status(200).json({ message: "Success", link: inquiryLink })
 })
 
 module.exports = {

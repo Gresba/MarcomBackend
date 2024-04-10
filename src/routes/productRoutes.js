@@ -1,7 +1,7 @@
 const express       = require('express');
 const multer        = require('multer');
 
-const { jwtSellerAuthorization } = require('../requestFilters/security');
+const { jwtSellerAndCustomerAuthorization } = require('../requestFilters/security');
 const { getUserByEmail } = require('../database/userQueries');
 const { createProduct, getProductsBySellerId, deleteProductById, getProductById, updateProductById } = require('../database/product');
 const { log } = require('../utils/consoleLogger');
@@ -12,7 +12,7 @@ const { generateId } = require('../utils/generateId');
  * 
  * Author: Paul Kim
  * Last Modified: 2/26/2024
- * Notes: jwtSellerAuthorization is a guard for the routes. 
+ * Notes: jwtSellerAndCustomerAuthorization is a guard for the routes. 
  *        It will check if someone is authorized to use route.
  * To Do(s):
  */
@@ -33,7 +33,7 @@ const storage = multer.diskStorage(
 
 const upload = multer({ storage: storage });
 
-productRoutes.get("/", jwtSellerAuthorization, async(req, res) => {
+productRoutes.get("/", jwtSellerAndCustomerAuthorization, async(req, res) => {
     log("Accessing Product Route For Sellers")
     const user = req.decoded
     const userId = user.id;
@@ -67,7 +67,7 @@ productRoutes.put("/:productId", async (req, res) => {
     }
 })
 
-productRoutes.post("/", upload.single('image'), jwtSellerAuthorization, async (req, res) => {
+productRoutes.post("/", upload.single('image'), jwtSellerAndCustomerAuthorization, async (req, res) => {
     const product = JSON.parse(req.body.product);
     const user = req.decoded;
 
@@ -101,7 +101,7 @@ productRoutes.post("/", upload.single('image'), jwtSellerAuthorization, async (r
     }
 })
 
-productRoutes.delete("/:productId", jwtSellerAuthorization, async (req, res) => {
+productRoutes.delete("/:productId", jwtSellerAndCustomerAuthorization, async (req, res) => {
     const productId = req.params.productId
     const user = req.decoded
     console.log(user)

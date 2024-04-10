@@ -18,13 +18,15 @@ async function getInvoicesByUserId(userType, userId)
                 FROM Invoice 
                 JOIN Product
                 ON Invoice.ProductId = Product.ProductId
-                WHERE Invoice.CustomerId = ?`
+                WHERE Invoice.CustomerId = ?
+                ORDER BY CreationDate DESC`
     }else if(userType === ROLES.SELLER){
         query = `SELECT Invoice.*, Product.Title 
                 FROM Invoice 
                 JOIN Product
                 ON Invoice.ProductId = Product.ProductId
-                WHERE Invoice.SellerId = ?`
+                WHERE Invoice.SellerId = ?
+                ORDER BY CreationDate DESC`
     }
 
     const response = await dbConnection.query(

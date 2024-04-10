@@ -9,7 +9,7 @@ const { JWT_SECRET, ROLES } = require('../constants/config');
  * @param {*} res HTTP Response
  * @param {*} next The next filter in the chain
  */
-function jwtSellerAuthorization(req, res, next)
+function jwtSellerAndCustomerAuthorization(req, res, next)
 {
     // Pull the authorization header from the request which is the JWT Token
     const token = req.headers.authorization;
@@ -26,7 +26,7 @@ function jwtSellerAuthorization(req, res, next)
             }
 
             // If the role associated with the JWT token !== the USER ROLE
-            if(decoded.role !== ROLES.SELLER)
+            if(decoded.role !== ROLES.SELLER && decoded.role !== ROLES.CUSTOMER)
             {
                 return res.status(403).send("Insufficient Permissions")
             }
@@ -108,7 +108,7 @@ async function jwtPostFeedbackFilter(req, res, next)
 
 
 module.exports = {
-    jwtSellerAuthorization,
+    jwtSellerAndCustomerAuthorization,
     jwtGetInvoiceFilter,
     jwtPostFeedbackFilter
 }

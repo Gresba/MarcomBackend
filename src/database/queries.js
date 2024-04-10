@@ -17,16 +17,20 @@ const { createMessage } = require("./message")
  */
 async function getQueriesBySellerId(sellerId)
 {
-    try{
-        const response = await dbConnection.query(
-            `SELECT * FROM Query
-             WHERE SellerId = ?`, [sellerId]
-        )
-        return response[0]
-    }catch(err){
-        console.log(err)
-        return 500;
-    }
+    const response = await dbConnection.query(
+        `SELECT * FROM Query
+        WHERE SellerId = ?`, [sellerId]
+    )
+    return response[0]
+}
+
+async function getQueriesByCustomerEmail(customerEmail)
+{
+    const response = await dbConnection.query(
+        `SELECT * FROM Query
+        WHERE Email = ?`, [customerEmail]
+    )
+    return response[0]
 }
 
 async function getQueryById(queryId)
@@ -58,5 +62,6 @@ async function createQuery(queryId, newQuery)
 module.exports = {
     createQuery,
     getQueryById,
-    getQueriesBySellerId
+    getQueriesBySellerId,
+    getQueriesByCustomerEmail
 }
