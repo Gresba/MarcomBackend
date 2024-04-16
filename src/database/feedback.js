@@ -25,7 +25,18 @@ async function getFeedbackByProductId(productId)
     return response[0]
 }
 
+async function getFeedbackByStoreName(storeName)
+{
+    const response = await dbConnection.query(
+        `SELECT * FROM Rating
+        WHERE SellerUsername = ?`, [storeName]
+    )
+
+    return response[0]
+}
+
 module.exports = {
     createFeedback,
-    getFeedbackByProductId
+    getFeedbackByProductId,
+    getFeedbackByStoreName
 }

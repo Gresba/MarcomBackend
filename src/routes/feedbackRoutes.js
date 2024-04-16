@@ -8,7 +8,7 @@
 const express           = require('express');
 const { jwtGetInvoiceFilter, jwtPostFeedbackFilter } = require('../requestFilters/security');
 const { getValueByInvoiceId, updateFeedbackById } = require('../database/invoiceQueries');
-const { createFeedback, getFeedbackByProductId } = require('../database/feedback');
+const { createFeedback, getFeedbackByProductId, getFeedbackByStoreName } = require('../database/feedback');
 const { generateId } = require('../utils/generateId');
 
 const feedbackRoutes    = express.Router()
@@ -23,6 +23,18 @@ feedbackRoutes.get("/:productId", async (req, res) => {
     }catch(e){
         console.log(e)
         return res.status(500).json({ message: "Internal Server Error"})
+    }
+})
+
+feedbackRoutes.get("/store/:storeName", async (req, res) => {
+    const storeName = req.params.storeName
+
+    try{
+        const feedback = getFeedbackByStoreName(storeName)
+
+        return res.status(200).json(feedback)
+    }catch(err){
+        return res.status(500).json({message: "Internal Server Error"})
     }
 })
 
