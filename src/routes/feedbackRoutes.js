@@ -30,7 +30,7 @@ feedbackRoutes.get("/store/:storeName", async (req, res) => {
     const storeName = req.params.storeName
 
     try{
-        const feedback = getFeedbackByStoreName(storeName)
+        const feedback = await getFeedbackByStoreName(storeName)
 
         return res.status(200).json(feedback)
     }catch(err){
