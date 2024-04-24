@@ -6,6 +6,7 @@ const { userRoutes } = require('./userRoutes')
 const { queryRoutes } = require('./queryRoutes')
 const { messageRoutes } = require('./messageRoutes')
 const { feedbackRoutes } = require('./feedbackRoutes')
+const { shoppingCartRoutes } = require('./shoppingCartRoutes')
 
 const router            = Router()
 
@@ -24,5 +25,6 @@ router.use("/invoices", invoiceRoutes)
 router.use("/queries", queryRoutes)
 router.use("/messages", messageRoutes)
 router.use("/feedback", feedbackRoutes)
+router.use("/shoppingcart", shoppingCartRoutes)
 
 module.exports = router

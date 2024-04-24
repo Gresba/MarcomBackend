@@ -15,7 +15,7 @@ const { sendEmail } = require('../utils/emailer');
 const { getValueByUserId } = require('../database/userQueries');
 const { FRONT_END_URL, ROLES } = require('../constants/config');
 const { jwtSellerAndCustomerFilter } = require('../requestFilters/invoiceFilters');
-const { jwtOrderCreationFilter } = require('../requestFilters/orderFilter');
+const { jwtCustomerFilter } = require('../requestFilters/customerFilter');
 
 const invoiceRoutes = express.Router()
 
@@ -27,7 +27,7 @@ const invoiceRoutes = express.Router()
  * Creating POST route for creating invoices. 
  * Anyone should be able to access so do not add any filters
  */
-invoiceRoutes.post("/", jwtOrderCreationFilter, async (req, res) => {
+invoiceRoutes.post("/", jwtCustomerFilter, async (req, res) => {
 
     const user = req.decoded
     const userId = user.id;

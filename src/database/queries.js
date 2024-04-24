@@ -1,4 +1,3 @@
-const { generateId } = require("../utils/generateId")
 const { dbConnection } = require("./connection")
 const { createMessage } = require("./message")
 /**

@@ -2,7 +2,7 @@ const jwt           = require('jsonwebtoken');
 
 const { JWT_SECRET, ROLES } = require('../constants/config');
 
-function jwtOrderCreationFilter(req, res, next)
+function jwtCustomerFilter(req, res, next)
 {
     // Pull the authorization header from the request which is the JWT Token
     const token = req.headers.authorization;
@@ -36,5 +36,5 @@ function jwtOrderCreationFilter(req, res, next)
 }
 
 module.exports = {
-    jwtOrderCreationFilter
+    jwtCustomerFilter
 }
