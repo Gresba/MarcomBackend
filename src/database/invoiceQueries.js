@@ -23,7 +23,7 @@ async function getInvoicesByUserId(userType, userId)
                 WHERE Invoice.CustomerId = ?
                 ORDER BY CreationDate DESC`
     }else if(userType === ROLES.SELLER){
-        query = `SELECT Invoice.*, Product.Title, User.Username
+        query = `SELECT Invoice.*, Product.Title
                 FROM Invoice 
                 JOIN Product
                 ON Invoice.ProductId = Product.ProductId

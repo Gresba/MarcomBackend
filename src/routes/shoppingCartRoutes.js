@@ -90,7 +90,7 @@ shoppingCartRoutes.put("/", jwtCustomerFilter, async (req, res) => {
         {
             const newQuantity = retrievedCartItem.Quantity + parseInt(shoppingCartItem.Quantity)
             console.log(newQuantity)
-            await updateCartItem('Quantity', newQuantity, retrievedCartItem.CartId)
+            await updateCartItem('Quantity', newQuantity, retrievedCartItem.CartItemId)
         }else{
             // Add the shoppingCartItem to the database
             await createShoppingCartItem(shoppingCartItem)

@@ -23,7 +23,7 @@ async function updateCartItem(column, value, id)
     await dbConnection.query(
         `UPDATE ShoppingCartItem
         SET ${column} = ?
-        WHERE CartId = ?`, [value, id]
+        WHERE CartItemId = ?`, [value, id]
     )
 }
 
