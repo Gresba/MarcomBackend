@@ -74,8 +74,9 @@ async function updateProductById(productId, newProduct)
                 ProductType = ?,
                 DeliverySpeed = ?,
                 DigitalType = ?,
-                Price = ?
-        WHERE ProductId = ?`, [newProduct.Title, newProduct.Description, newProduct.ProductType, newProduct.DeliverySpeed, newProduct.DigitalType, newProduct.Price, productId]
+                Price = ?,
+                Stock = ?
+        WHERE ProductId = ?`, [newProduct.Title, newProduct.Description, newProduct.ProductType, newProduct.DeliverySpeed, newProduct.DigitalType, newProduct.Price, newProduct.Stock, productId]
     )
     console.log(response)
 }

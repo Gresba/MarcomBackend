@@ -53,11 +53,11 @@ productRoutes.get("/:productId", async (req, res) => {
     return res.status(200).json(product)
 })
 
-
+// Route to update a new product
 productRoutes.put("/:productId", async (req, res) => {
     const productId = req.params.productId
     const newProduct = req.body
-
+    console.log(newProduct)
     try{
         await updateProductById(productId, newProduct)
         return res.status(200).json({ message: "Success"})
@@ -67,6 +67,7 @@ productRoutes.put("/:productId", async (req, res) => {
     }
 })
 
+// Route to upload a new product
 productRoutes.post("/", upload.single('image'), jwtSellerAndCustomerAuthorization, async (req, res) => {
     const product = JSON.parse(req.body.product);
     const user = req.decoded;
@@ -77,7 +78,7 @@ productRoutes.post("/", upload.single('image'), jwtSellerAndCustomerAuthorizatio
     product.productId = generateId(16);
     product.productImage = imageId;
     product.sellerId = user.id 
-    product.stock = 0
+    product.stock = product.stock
     
     if(!product)
     {
