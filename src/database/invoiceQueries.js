@@ -14,7 +14,7 @@ async function getInvoicesByUserId(userType, userId)
     let query;
     if(userType === ROLES.CUSTOMER)
     {
-        query = `SELECT Invoice.*, Product.Title, User.Username
+        query = `SELECT Invoice.*, Product.Title, Product.ProductImage, User.Username
                 FROM Invoice 
                 INNER JOIN Product
                 ON Invoice.ProductId = Product.ProductId
@@ -23,7 +23,7 @@ async function getInvoicesByUserId(userType, userId)
                 WHERE Invoice.CustomerId = ?
                 ORDER BY CreationDate DESC`
     }else if(userType === ROLES.SELLER){
-        query = `SELECT Invoice.*, Product.Title
+        query = `SELECT Invoice.*, Product.Title, Product.ProductImage
                 FROM Invoice 
                 JOIN Product
                 ON Invoice.ProductId = Product.ProductId

@@ -4,7 +4,7 @@ async function getShoppingCartByUserId(userId)
 {
     const response = await dbConnection.query(
         `SELECT * FROM ShoppingCart
-        WHERE CustomerId = ? AND InvoiceId IS NULL`, [userId]
+        WHERE CustomerId = ?`, [userId]
     )
     return response[0][0]
 }
@@ -66,6 +66,15 @@ async function deleteShoppingCartItemById(id)
     return response[0]
 }
 
+async function deleteShoppingCartItemByProductId(productId, cartId)
+{
+    const response = await dbConnection.query(
+        `DELETE FROM ShoppingCartItem
+        WHERE ProductId = ? AND CartId = ?`, [productId, cartId]
+    )
+    return response[0]
+}
+
 module.exports = {
     updateCartItem,
     getCartItemByProductIdAndCartId,
@@ -73,5 +82,6 @@ module.exports = {
     createShoppingCart,
     createShoppingCartItem,
     getShoppingCartItemsByUserId,
-    deleteShoppingCartItemById
+    deleteShoppingCartItemById,
+    deleteShoppingCartItemByProductId
 }

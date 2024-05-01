@@ -10,6 +10,7 @@ const { jwtGetInvoiceFilter, jwtPostFeedbackFilter } = require('../requestFilter
 const { getValueByInvoiceId, updateFeedbackById } = require('../database/invoiceQueries');
 const { createFeedback, getFeedbackByProductId, getFeedbackByStoreName } = require('../database/feedback');
 const { generateId } = require('../utils/generateId');
+const { jwtCustomerFilter } = require('../requestFilters/customerFilter');
 
 const feedbackRoutes    = express.Router()
 
@@ -47,7 +48,7 @@ feedbackRoutes.get("/store/:storeName", async (req, res) => {
  * Anyone should be able to access so do not add any filters.
  * Must add security (This comment should be changed when security is added)
  */
-feedbackRoutes.post("/", jwtPostFeedbackFilter,async (req, res) => {
+feedbackRoutes.post("/", jwtCustomerFilter,async (req, res) => {
     try{
         const rating = req.body
         const invoiceId = rating.InvoiceId

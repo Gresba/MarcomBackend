@@ -16,6 +16,7 @@ const { getValueByUserId } = require('../database/userQueries');
 const { FRONT_END_URL, ROLES } = require('../constants/config');
 const { jwtSellerAndCustomerFilter } = require('../requestFilters/invoiceFilters');
 const { jwtCustomerFilter } = require('../requestFilters/customerFilter');
+const { getShoppingCartByUserId, deleteShoppingCartItemByProductId } = require('../database/shoppingCart');
 
 const invoiceRoutes = express.Router()
 
@@ -31,6 +32,9 @@ invoiceRoutes.post("/", jwtCustomerFilter, async (req, res) => {
 
     const user = req.decoded
     const userId = user.id;
+
+    const shoppingCart = await getShoppingCartByUserId(userId)
+    const cartId = shoppingCart.CartId
 
     // Extracting the body from the request
     const invoice = req.body;
@@ -55,9 +59,10 @@ invoiceRoutes.post("/", jwtCustomerFilter, async (req, res) => {
     try
     {
         await createInvoice(invoice)
+        await deleteShoppingCartItemByProductId(invoice.ProductId, cartId)
         const invoiceUrl = `${FRONT_END_URL}/${storeName}/order/${invoiceId}`;
         await sendEmail(invoice.CustomerEmail, `Your order ${invoice.InvoiceId}`, `Order Link: ${invoiceUrl}`)
-        return res.status(302).json({message: "Successfully Created", link: invoiceUrl})
+        return res.status(200).json({message: "Successfully Created", link: invoiceUrl})
     }catch(err){
         console.log(err)
         return res.status(500).json({message: "Error saving invoice"})
