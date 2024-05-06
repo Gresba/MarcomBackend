@@ -6,7 +6,7 @@
  * TO DO(s):
  */
 const express           = require('express');
-const { jwtGetInvoiceFilter, jwtPostFeedbackFilter } = require('../requestFilters/security');
+const { jwtPostFeedbackFilter } = require('../requestFilters/security');
 const { getValueByInvoiceId, updateFeedbackById } = require('../database/invoiceQueries');
 const { createFeedback, getFeedbackByProductId, getFeedbackByStoreName } = require('../database/feedback');
 const { generateId } = require('../utils/generateId');

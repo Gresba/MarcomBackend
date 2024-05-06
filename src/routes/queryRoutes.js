@@ -63,7 +63,7 @@ queryRoutes.get("/:queryId", async (req, res) =>
     }
 })
 
-queryRoutes.post("/", async (req, res) => 
+queryRoutes.post("/", jwtSellerAndCustomerAuthorization, async (req, res) => 
 {
     const queryId = generateId(20)
 

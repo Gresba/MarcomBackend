@@ -78,6 +78,7 @@ productRoutes.post("/", upload.single('image'), jwtSellerAndCustomerAuthorizatio
         const uploadImageResponse = await uploadImageToCloudFlare(req.file.path)
         imageId = uploadImageResponse.data.result.id
     }else{
+        // This is the image id for the default image
         imageId = "67492f2d-5f66-40d9-ac18-2de0588bcc00"
     }
 

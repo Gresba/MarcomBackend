@@ -10,7 +10,7 @@ const express       = require('express');
 const { createInvoice, getInvoiceById, getInvoicesByUserId, updateInvoiceByInvoiceId, getInvoicesByEmail } = require('../database/invoiceQueries');
 const { getProductById } = require('../database/product');
 const { generateId } = require('../utils/generateId');
-const { jwtGetInvoiceFilter } = require('../requestFilters/security');
+const { jwtSellerAndCustomerAuthorization } = require('../requestFilters/security');
 const { sendEmail } = require('../utils/emailer');
 const { getValueByUserId } = require('../database/userQueries');
 const { FRONT_END_URL, ROLES } = require('../constants/config');
@@ -72,7 +72,7 @@ invoiceRoutes.post("/", jwtCustomerFilter, async (req, res) => {
 /**
  * Get a specific invoice by it's id
  */
-invoiceRoutes.get("/:invoiceId", jwtGetInvoiceFilter, async (req, res) => {
+invoiceRoutes.get("/:invoiceId", jwtSellerAndCustomerAuthorization, async (req, res) => {
     const invoiceId = req.params.invoiceId.split("-")[0]
     const user = req.decoded
     try{
