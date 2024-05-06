@@ -72,13 +72,18 @@ productRoutes.post("/", upload.single('image'), jwtSellerAndCustomerAuthorizatio
     const product = JSON.parse(req.body.product);
     const user = req.decoded;
 
-    const uploadImageResponse = await uploadImageToCloudFlare(req.file.path)
-    const imageId = uploadImageResponse.data.result.id
+    let imageId;
+    if(req.file)
+    {
+        const uploadImageResponse = await uploadImageToCloudFlare(req.file.path)
+        imageId = uploadImageResponse.data.result.id
+    }else{
+        imageId = "67492f2d-5f66-40d9-ac18-2de0588bcc00"
+    }
 
     product.productId = generateId(16);
     product.productImage = imageId;
     product.sellerId = user.id 
-    product.stock = product.stock
     
     if(!product)
     {
