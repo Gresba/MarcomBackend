@@ -19,7 +19,7 @@ async function createFeedback(feedback)
 async function getFeedbackByProductId(productId)
 {
     const response = await dbConnection.query(
-        `SELECT Rating, DateCreated, Message FROM Feedback
+        `SELECT Rating, DateCreated, Message, Title FROM Feedback
         WHERE ProductId = ?`, [productId]
     )
     return response[0]
@@ -28,7 +28,7 @@ async function getFeedbackByProductId(productId)
 async function getFeedbackByStoreName(storeName)
 {
     const response = await dbConnection.query(
-        `SELECT Rating, DateCreated, Message FROM Feedback
+        `SELECT Rating, DateCreated, Message, Title FROM Feedback
         WHERE SellerUsername = ?
         ORDER BY DateCreated DESC`, [storeName]
     )
