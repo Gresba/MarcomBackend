@@ -25,6 +25,15 @@ async function getFeedbackByProductId(productId)
     return response[0]
 }
 
+async function getSellerByProductId(productId)
+{
+    const response = await dbConnection.query(
+            `SELECT SellerUsername FROM Feedback
+            WHERE ProductId = ?`, [productId]
+        )
+        return response[0]
+}
+
 async function getFeedbackByStoreName(storeName)
 {
     const response = await dbConnection.query(
@@ -39,5 +48,6 @@ async function getFeedbackByStoreName(storeName)
 module.exports = {
     createFeedback,
     getFeedbackByProductId,
-    getFeedbackByStoreName
+    getFeedbackByStoreName,
+    getSellerByProductId
 }
