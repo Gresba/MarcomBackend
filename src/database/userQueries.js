@@ -112,6 +112,17 @@ async function deleteUserById(userId)
 
 }
 
+async function getMerchantByUsername(username) {
+    try {
+      const query = `SELECT * FROM User WHERE Username =? AND AccountType = 'Merchant'`;
+      const response = await dbConnection.query(query, [username]);
+      return response[0]; // return the first matching row
+    } catch (error) {
+      console.error(`Error getting merchant by username: ${error}`);
+      throw error; // rethrow the error
+    }
+  }
+
 module.exports = {
     getUserById,
     getUserByUsername,
@@ -119,5 +130,7 @@ module.exports = {
     createUser,
     updateUserById,
     deleteUserById,
-    getValueByUserId
+    getValueByUserId,
+    getMerchantByUsername
 }
+
