@@ -112,7 +112,7 @@ async function deleteUserById(userId)
 
 }
 
-async function getMerchantByUsername(username) {
+async function getSellerByUsername(username) {
     try {
       const query = `SELECT * FROM User WHERE Username =? AND AccountType = 'Merchant'`;
       const response = await dbConnection.query(query, [username]);
@@ -131,6 +131,6 @@ module.exports = {
     updateUserById,
     deleteUserById,
     getValueByUserId,
-    getMerchantByUsername
+    getSellerByUsername
 }
 
