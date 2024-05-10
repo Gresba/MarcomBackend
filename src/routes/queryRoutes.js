@@ -79,7 +79,7 @@ queryRoutes.post("/", jwtSellerAndCustomerAuthorization, async (req, res) =>
     const seller = await getUserByUsername(newQuery.StoreName)
     
     if(!seller)
-        return res.status(404).json({ message: "Invalid Store Name"})
+        return res.statu(404).json({ message: "Invalid Store Name"})
 
     // Pull the seller id from the shop name
     newQuery.sellerId = seller.UserId

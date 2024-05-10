@@ -132,6 +132,7 @@ module.exports = {
     getUserByUsername,
     getUserByEmail,
     createUser,
+    getAllMerchants,
     deleteUserById,
     getValueByUserId,
     getSellerByUsername
