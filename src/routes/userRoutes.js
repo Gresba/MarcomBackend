@@ -1,6 +1,7 @@
 const express       = require('express');
 const { getUserByUsername, getAllMerchants } = require('../database/userQueries');
 const { getProductsBySellerId } = require('../database/product');
+const { getSellerByUsername } = require('../database/userQueries'); //
 
 const userRoutes    = express.Router()
 
@@ -29,6 +30,5 @@ userRoutes.get("/merchants", async (req, res) => {
         res.status(500).json({message: "Internal Server Error"})
     }
 })
-
 
 module.exports = { userRoutes }
