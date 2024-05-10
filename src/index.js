@@ -5,6 +5,7 @@ const bodyParser    = require('body-parser');
 const router = require('./routes/routes');
 const { PORT } = require('./constants/config');
 const { StaticConstants } = require('./constants/staticConstants');
+const { dbConnection } = require('./database/connection');
 
 const app = express()
 const port = PORT || 4000;
@@ -20,6 +21,13 @@ app.use('/', router)
 
 app.listen(port, () => 
     {
+        try{
+            dbConnection
+            console.log("Connected to db")
+        }catch(err){
+            console.log(err)
+            console.log("Could not connect to db")
+        }
         console.log(`Running port ${port}`)
     }
 )
