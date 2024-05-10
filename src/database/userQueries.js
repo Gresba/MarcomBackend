@@ -134,11 +134,6 @@ module.exports = {
     createUser,
     deleteUserById,
     getValueByUserId,
-<<<<<<< HEAD
-    getAllMerchants
-}
-=======
     getSellerByUsername
 }
 
->>>>>>> 377bea259ca6a2efd4b170c8d357e6e0e5d39013
