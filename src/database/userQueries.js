@@ -102,9 +102,13 @@ async function createUser(user)
     }
 }
 
-async function updateUserById(userId, user)
+async function getAllMerchants()
 {
-
+    const response = await dbConnection.query(
+        `SELECT * FROM User
+         WHERE AccountType = 'Merchant'
+        `);
+    return response[0]
 }
 
 async function deleteUserById(userId)
@@ -117,7 +121,7 @@ module.exports = {
     getUserByUsername,
     getUserByEmail,
     createUser,
-    updateUserById,
     deleteUserById,
-    getValueByUserId
+    getValueByUserId,
+    getAllMerchants
 }
