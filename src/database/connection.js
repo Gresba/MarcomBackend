@@ -14,6 +14,7 @@ const { DatabaseConstants } = require('../constants/config')
 const dbConnection = mysql.createPool({
     host: DatabaseConstants.DATABASE_HOST,
     user: DatabaseConstants.DATABASE_USER,
+    port: 3306,
     password: DatabaseConstants.DATABASE_PW,
     database: DatabaseConstants.DATABASE_NAME
 }).promise()
