@@ -134,6 +134,7 @@ module.exports = {
     createUser,
     deleteUserById,
     getValueByUserId,
-    getSellerByUsername
+    getSellerByUsername,
+    getAllMerchants
 }
 
