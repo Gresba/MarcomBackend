@@ -7,7 +7,7 @@
  * - Implement get invoice routes
  */
 const express       = require('express');
-const { createInvoice, getInvoiceById, getInvoicesByUserId, updateInvoiceByInvoiceId, getInvoicesByEmail } = require('../database/invoiceQueries');
+const { createInvoice, getInvoiceById, getInvoicesByUserId, updateInvoiceByInvoiceId, getInvoicesByEmail } = require('../database/invoice');
 const { getProductById } = require('../database/product');
 const { generateId } = require('../utils/generateId');
 const { jwtSellerAndCustomerAuthorization } = require('../requestFilters/security');

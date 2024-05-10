@@ -57,6 +57,12 @@ productRoutes.get("/:productId", async (req, res) => {
 productRoutes.put("/:productId", async (req, res) => {
     const productId = req.params.productId
     const newProduct = req.body
+
+    if(newProduct.Stock < 0)
+    {
+        return res.status(400).json({message: "INVALID_STOCK"})
+    }
+
     console.log(newProduct)
     try{
         await updateProductById(productId, newProduct)
@@ -71,6 +77,11 @@ productRoutes.put("/:productId", async (req, res) => {
 productRoutes.post("/", upload.single('image'), jwtSellerAndCustomerAuthorization, async (req, res) => {
     const product = JSON.parse(req.body.product);
     const user = req.decoded;
+
+    if(product.Stock < 0)
+    {
+        return res.status(400).json({message: "INVALID_STOCK"})
+    }
 
     let imageId;
     if(req.file)

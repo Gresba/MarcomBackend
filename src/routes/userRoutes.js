@@ -5,6 +5,9 @@ const { getSellerByUsername } = require('../database/userQueries'); //
 
 const userRoutes    = express.Router()
 
+/**
+ * Get all informaton for a user with the specified username
+ */
 userRoutes.get("/:username/all", async (req, res) => {
     const username = req.params.username
     const user = await getUserByUsername(username)
@@ -19,8 +22,8 @@ userRoutes.get("/:username/all", async (req, res) => {
     }
 })
 
-userRoutes.get("/merchants", async (req, res) => {
-    
+userRoutes.get("/merchants", async (req, res) => 
+{
     try{
         const merchants = await getAllMerchants()
         

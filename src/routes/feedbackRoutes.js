@@ -7,7 +7,7 @@
  */
 const express           = require('express');
 const { jwtPostFeedbackFilter } = require('../requestFilters/security');
-const { getValueByInvoiceId, updateFeedbackById } = require('../database/invoiceQueries');
+const { getValueByInvoiceId, updateFeedbackById } = require('../database/invoice');
 const { createFeedback, getFeedbackByProductId, getFeedbackByStoreName } = require('../database/feedback');
 const { generateId } = require('../utils/generateId');
 const { jwtCustomerFilter } = require('../requestFilters/customerFilter');
