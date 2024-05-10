@@ -22,7 +22,7 @@ app.use('/', router)
 app.listen(port, () => 
     {
         try{
-            dbConnection
+            console.log(dbConnection)
             console.log("Connected to db")
         }catch(err){
             console.log(err)
