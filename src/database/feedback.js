@@ -16,6 +16,14 @@ async function createFeedback(feedback)
     return response;
 }
 
+
+async function createFeedbackOne(feedback) {
+const response = await dbConnection.query(
+'INSERT INTO Feedback (Rating, Message) VALUES (?, ?)', [feedback]
+)
+return response;
+}
+
 async function getFeedbackByProductId(productId)
 {
     const response = await dbConnection.query(
@@ -45,9 +53,23 @@ async function getFeedbackByStoreName(storeName)
     return response[0]
 }
 
+async function updateFeedbackBySeller(sellerUsername)
+{
+    const response = await dbConnection.query(
+        `UPDATE Feedback
+        SET Rating, Message = ?
+        WHERE SellerUsername = ?`, [sellerUsername]
+    )
+    return response
+}
+
+
+
 module.exports = {
     createFeedback,
     getFeedbackByProductId,
     getFeedbackByStoreName,
-    getSellerByProductId
+    getSellerByProductId,
+    createFeedbackOne,
+    updateFeedbackBySeller
 }

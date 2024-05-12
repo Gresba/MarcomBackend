@@ -8,6 +8,7 @@
 const express           = require('express');
 const { jwtPostFeedbackFilter } = require('../requestFilters/security');
 const { getValueByInvoiceId, updateFeedbackById } = require('../database/invoice');
+const { updateFeedbackBySellerUsername } = require(`../database/feedback`);
 const { createFeedback, getFeedbackByProductId, getFeedbackByStoreName } = require('../database/feedback');
 const { generateId } = require('../utils/generateId');
 const { jwtCustomerFilter } = require('../requestFilters/customerFilter');
@@ -68,6 +69,34 @@ feedbackRoutes.post("/", jwtCustomerFilter,async (req, res) => {
 
         const response = await createFeedback(rating)
         await updateFeedbackById(invoiceId, feedbackId)
+        console.log(response)
+        res.status(200).json({ message: "Created Feedback" })
+    }catch(e){
+        console.log(e)
+        if(e.errno === 4025)
+        {
+            res.status(400).json({ message: "Bad Request"})
+        }
+        res.status(500).json({ message: "Interval Server Error"})
+    }
+})
+
+feedbackRoutes.post("/", jwtCustomerFilter,async (req, res) => {
+    try{
+        const rating = req.body
+        const sellerUsername = rating.SellerUsername
+        console.log(rating)
+        console.log(sellerUsername)
+        const feedbackId = generateId(35);
+
+        const dateCreated = new Date()
+        rating.DateCreated = dateCreated;
+        rating.FeedbackId = feedbackId;
+        rating.SellerUsername = sellerUsername;
+        console.log(rating)
+
+        const response = await createFeedback(rating)
+        await updateFeedbackBySellerUsername(sellerUsername)
         console.log(response)
         res.status(200).json({ message: "Created Feedback" })
     }catch(e){
