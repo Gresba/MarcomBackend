@@ -70,10 +70,19 @@ async function updateInvoiceByInvoiceId(field, value, invoiceId)
 
 async function createInvoice(invoice)
 {
-    const response = dbConnection.query(
+    const response = await dbConnection.query(
         `INSERT INTO Invoice SET ?`, [invoice]
     )
     return response;
+}
+
+async function getAllProducts()
+{
+    const response = await dbConnection.query(
+        `SELECT * FROM Product`
+    )
+    console.log(response[0])
+    return response[0];
 }
 
 async function getInvoiceById(invoiceId)
@@ -107,5 +116,6 @@ module.exports = {
     updateFeedbackById,
     updateInvoiceByInvoiceId,
     getInvoicesByUserId,
-    getInvoicesByEmail
+    getInvoicesByEmail,
+    getAllProducts
 }

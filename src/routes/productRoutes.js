@@ -7,6 +7,7 @@ const { createProduct, getProductsBySellerId, deleteProductById, getProductById,
 const { log } = require('../utils/consoleLogger');
 const { uploadImageToCloudFlare } = require('../utils/cloudflare/uploadImage');
 const { generateId } = require('../utils/generateId');
+const { getAllProducts } = require('../database/invoice');
 /**
  * Contains all the routes for products
  * 
@@ -32,6 +33,12 @@ const storage = multer.diskStorage(
 )
 
 const upload = multer({ storage: storage });
+
+productRoutes.get("/all", async(req, res) => {
+    const products = await getAllProducts()
+    
+    return res.status(200).json(products)
+})
 
 productRoutes.get("/", jwtSellerAndCustomerAuthorization, async(req, res) => {
     log("Accessing Product Route For Sellers")
