@@ -39,8 +39,11 @@ async function getProductPriceByProductId(productId)
 async function getAllProductContaining(query)
 {
     const response = await dbConnection.query(
-        `SELECT * FROM Product
-        WHERE Title LIKE ?`, [query]
+        `SELECT Product.*, User.Username
+        FROM Product
+        INNER JOIN User
+        ON Product.UserId = User.UserId
+        WHERE Product.Title LIKE ?`, [query]
     )
     console.log(response)
     return response[0];
