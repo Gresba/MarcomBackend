@@ -130,6 +130,16 @@ async function deleteProductById(productId)
     }
 }
 
+async function getAllProducts()
+{
+    const response = await dbConnection.query(
+        `SELECT * FROM Product`
+    )
+    console.log(response[0])
+    return response[0];
+}
+
+
 module.exports = {
     getProductPriceByProductId,
     createProduct,
@@ -137,5 +147,6 @@ module.exports = {
     deleteProductById,
     getProductById,
     updateProductById,
-    getAllProductContaining
+    getAllProductContaining,
+    getAllProducts
 }
