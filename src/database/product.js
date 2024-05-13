@@ -36,6 +36,16 @@ async function getProductPriceByProductId(productId)
     return response[0][0].Price
 }
 
+async function getAllProductContaining(query)
+{
+    const response = await dbConnection.query(
+        `SELECT * FROM Product
+        WHERE Title LIKE ?`, [query]
+    )
+    console.log(response)
+    return response[0];
+}
+
 async function createProduct(product)
 {
     try{
@@ -123,5 +133,6 @@ module.exports = {
     getProductsBySellerId,
     deleteProductById,
     getProductById,
-    updateProductById
+    updateProductById,
+    getAllProductContaining
 }

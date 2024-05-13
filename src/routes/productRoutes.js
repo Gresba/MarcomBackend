@@ -3,7 +3,7 @@ const multer        = require('multer');
 
 const { jwtSellerAndCustomerAuthorization } = require('../requestFilters/security');
 const { getUserByEmail } = require('../database/userQueries');
-const { createProduct, getProductsBySellerId, deleteProductById, getProductById, updateProductById } = require('../database/product');
+const { createProduct, getProductsBySellerId, deleteProductById, getProductById, updateProductById, getAllProductContaining } = require('../database/product');
 const { log } = require('../utils/consoleLogger');
 const { uploadImageToCloudFlare } = require('../utils/cloudflare/uploadImage');
 const { generateId } = require('../utils/generateId');
@@ -54,7 +54,8 @@ productRoutes.get("/:productId", async (req, res) => {
 })
 
 // Route to update a new product
-productRoutes.put("/:productId", async (req, res) => {
+productRoutes.put("/:productId", async (req, res) => 
+{
     const productId = req.params.productId
     const newProduct = req.body
 
@@ -63,14 +64,23 @@ productRoutes.put("/:productId", async (req, res) => {
         return res.status(400).json({message: "INVALID_STOCK"})
     }
 
-    console.log(newProduct)
-    try{
+    try
+    {
         await updateProductById(productId, newProduct)
         return res.status(200).json({ message: "Success"})
     }catch(err){
         console.log(err)
         return res.status(500).json({ message: "Internal Server Error"})
     }
+})
+
+productRoutes.get("/title/:query", async (req, res) => {
+    const searchQuery = req.params.query;
+    console.log(searchQuery)
+
+    const products = await getAllProductContaining("%" + searchQuery + "%");
+
+    return res.status(200).json(products);
 })
 
 // Route to upload a new product

@@ -121,7 +121,6 @@ invoiceRoutes.get("/", jwtSellerAndCustomerFilter, async (req, res) =>
         const invoicesByUserId = await getInvoicesByUserId(userRole, userId)
         invoices = [...invoices, ...invoicesByUserId]
 
-        console.log(invoices)
         return res.status(200).json(invoices)
     }catch(err){
         console.log(err)
