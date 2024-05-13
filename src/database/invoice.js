@@ -79,7 +79,10 @@ async function createInvoice(invoice)
 async function getInvoiceById(invoiceId)
 {
     const response = await dbConnection.query(
-        `SELECT * FROM Invoice
+        `SELECT Invoice.*, Product.Title
+        FROM Invoice
+        INNER JOIN Product
+        ON Invoice.ProductId = Product.ProductId
         WHERE InvoiceId = ?`, [invoiceId]
     )
     return response[0][0];
